@@ -38,7 +38,9 @@ const WelcomeHero = () => {
   const offsetX = main * LAYOUT.offsetXRatio
 
   return (
-    <View style={{ width: main + offsetX * 2, height: main * LAYOUT.containerHeightRatio + secondary }}>
+    <View
+      style={{ width: main + offsetX * 2, height: main * LAYOUT.containerHeightRatio + secondary }}
+    >
       <PhotoCard
         width={main}
         height={main}
