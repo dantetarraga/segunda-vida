@@ -24,94 +24,67 @@ Red de rescate animal que conecta personas para reportar, atender y transformar 
 
 ## Arquitectura de carpetas
 
+La app sigue una arquitectura **module-first sobre Expo Router**: lo que se comparte vive en la raíz, lo que es exclusivo de un módulo vive dentro de ese módulo con prefijo `_` (Expo Router ignora carpetas/archivos que empiezan con `_` al construir las rutas).
+
 ```
 segunda-vida/
-├── app/                              # Pantallas (Expo Router)
-│   ├── (auth)/
-│   │   ├── _layout.tsx               # Guard: redirige si ya hay sesión
-│   │   └── login.tsx                 # Login con Google
-│   ├── (tabs)/                       # Navegación principal (bottom tabs)
-│   │   ├── _layout.tsx               # Tab bar: Feed, Rescates, Adopciones, Perfil
-│   │   ├── index.tsx                 # Feed / Noticias
-│   │   ├── rescues.tsx               # Lista de casos de rescate
-│   │   ├── adopt.tsx                 # Galería de adopciones
-│   │   └── profile.tsx               # Perfil del colaborador
-│   ├── (admin)/                      # Panel admin (role-guard: solo admins)
+├── app/                              # Pantallas (Expo Router · file-based routing)
+│   ├── _layout.tsx                   # Root layout (providers globales)
+│   ├── global.css                    # Tailwind base
+│   │
+│   ├── (auth)/                       # Módulo: autenticación
 │   │   ├── _layout.tsx
-│   │   ├── index.tsx                 # Dashboard con métricas
-│   │   ├── cases.tsx                 # Gestión de casos
-│   │   ├── dogs.tsx                  # Gestión de perros
-│   │   └── users.tsx                 # Gestión de usuarios
-│   ├── rescue/
-│   │   ├── new.tsx                   # Crear reporte de rescate
-│   │   └── [id].tsx                  # Detalle de caso
-│   ├── adopt/
-│   │   └── [id].tsx                  # Detalle de perro + solicitud adopción
-│   ├── donations/
-│   │   └── index.tsx                 # Donar (QR Yape) + historial
-│   ├── projects/
-│   │   └── index.tsx                 # Proyectos del albergue
-│   ├── notifications.tsx             # Lista de notificaciones
-│   ├── _layout.tsx                   # Root layout (ThemeProvider + QueryProvider)
-│   └── global.css                    # Tailwind base
+│   │   ├── login.tsx
+│   │   ├── register.tsx
+│   │   ├── _components/              # Componentes SOLO de este módulo
+│   │   ├── _hooks/                   # Hooks SOLO de este módulo
+│   │   ├── _schemas/                 # Schemas Zod del módulo
+│   │   └── _services/                # Llamadas API del módulo
+│   │
+│   ├── (onboarding)/                 # Módulo: onboarding
+│   │   ├── _layout.tsx
+│   │   ├── index.tsx
+│   │   ├── features.tsx
+│   │   ├── _components/
+│   │   └── _hooks/
+│   │
+│   └── (tabs)/                       # Módulo: navegación principal
+│       ├── _layout.tsx
+│       └── index.tsx
 │
-├── components/
-│   ├── ui/                           # Átomos reutilizables
-│   │   ├── button.tsx
-│   │   ├── card.tsx
-│   │   ├── badge.tsx
-│   │   ├── avatar.tsx
-│   │   ├── icon-symbol.tsx
-│   │   └── collapsible.tsx
-│   ├── rescue/                       # Componentes del dominio rescate
-│   │   ├── rescue-card.tsx           # Tarjeta de caso en el listado
-│   │   ├── case-status-badge.tsx     # Badge: reportado / en revisión / resuelto
-│   │   └── take-case-button.tsx      # Botón "Yo puedo ayudar"
-│   ├── adopt/
-│   │   └── dog-card.tsx              # Tarjeta de perro en galería
-│   ├── feed/
-│   │   └── news-card.tsx             # Tarjeta de noticia / historia
-│   └── shared/
-│       ├── photo-picker.tsx          # Selector de fotos (cámara o galería)
-│       ├── location-picker.tsx       # Selector de ubicación GPS + referencia
-│       └── notification-item.tsx     # Item de notificación
-│
-├── hooks/
-│   ├── use-auth.ts                   # Leer usuario, rol y acciones de sesión
-│   ├── use-location.ts               # Obtener coordenadas actuales
-│   ├── use-notifications.ts          # Registrar token y escuchar eventos
-│   ├── use-color-scheme.ts           # Light / dark mode
-│   └── use-theme-color.ts            # Colores según tema activo
-│
-├── store/
-│   ├── auth.store.ts                 # Zustand: usuario, token, rol, logout
-│   └── notifications.store.ts        # Zustand: contador de no leídas
-│
-├── services/
-│   ├── api.ts                        # Cliente base (fetch con auth header)
-│   ├── auth.service.ts               # Google OAuth + intercambio de token
-│   ├── rescue.service.ts             # CRUD de casos + cambios de estado
-│   ├── adopt.service.ts              # Listado de perros + solicitudes
-│   ├── donations.service.ts          # Registro de donaciones
-│   └── notifications.service.ts      # Registro de push token
-│
-├── lib/
-│   ├── query-client.ts               # Configuración de TanStack Query
-│   └── storage.ts                    # Wrapper de expo-secure-store
-│
-├── types/
-│   ├── auth.types.ts
-│   ├── rescue.types.ts
-│   ├── adopt.types.ts
-│   ├── donation.types.ts
-│   └── user.types.ts
+├── components/                       # UI y componentes COMPARTIDOS entre módulos
+│   └── ui/                           # Primitivos (button, photo-card, floating-tag…)
 │
 ├── constants/
-│   └── theme.ts                      # Colores, fuentes y tokens de diseño
+│   └── theme.ts                      # Tokens del design system (colors, fonts, radii…)
 │
-└── assets/
-    └── images/
+├── lib/                              # Utilidades COMPARTIDAS
+│   ├── cn.ts                         # Helper para combinar clases Tailwind
+│   └── storage.ts                    # Wrapper de expo-secure-store
+│
+├── assets/
+│   └── images/
+│
+├── docs/                             # README + Design System
+└── scripts/
 ```
+
+### Regla de oro: dónde poner cada cosa
+
+| ¿Se usa en…?                       | Ubicación                                                                |
+| ---------------------------------- | ------------------------------------------------------------------------ |
+| 2+ módulos (o toda la app)         | Raíz → `components/`, `lib/`, `constants/`                               |
+| Un solo módulo (auth, onboarding…) | Dentro del módulo → `_components/`, `_hooks/`, `_schemas/`, `_services/` |
+
+**Por qué el prefijo `_`**: Expo Router excluye automáticamente de las rutas cualquier archivo o carpeta que comience con `_`. Así se mantienen los assets internos del módulo junto al código que los usa sin contaminar la navegación.
+
+### Cuándo "promover" algo a la raíz
+
+Mover un componente/hook desde `app/(modulo)/_components/` a `components/` cuando:
+
+- Lo necesita un segundo módulo.
+- Es un primitivo de UI (button, input, card…) sin lógica de negocio.
+- Es una utilidad transversal (formatters, validators genéricos).
 
 ## Flujo de navegación
 
@@ -273,18 +246,18 @@ constants/theme.ts
 
 ### Clases Tailwind disponibles
 
-| Categoría | Clases |
-| --- | --- |
-| Fondos | `bg-bg` `bg-surface` `bg-surface-2` `bg-surface-3` |
-| Texto | `text-text` `text-text-2` `text-text-3` `text-text-inv` |
-| Marca | `bg-primary` `bg-primary-soft` `text-primary-ink` `bg-primary-hover` |
-| Bordes | `border-border` `border-border-strong` |
-| Estados | `bg-state-reported` `bg-state-review` `bg-state-taken` `bg-state-progress` `bg-state-resolved` + `-soft` |
-| Urgencia | `bg-urgency-high` `bg-urgency-mid` `bg-urgency-low` |
-| Tipografía | `text-display` `text-h1` `text-h2` `text-h3` `text-body` `text-body-bold` `text-caption` `text-micro` `text-data` |
-| Fuentes | `font-manrope` `font-manrope-md` `font-manrope-sb` `font-manrope-bd` `font-manrope-xb` `font-mono` `font-mono-md` |
-| Radios | `rounded-sm` (10) `rounded-md` (14) `rounded-lg` (20) `rounded-xl` (28) `rounded-pill` (999) `rounded-fab` (18) |
-| Sombras web | `shadow-sm` `shadow-md` `shadow-lg` |
+| Categoría   | Clases                                                                                                            |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| Fondos      | `bg-bg` `bg-surface` `bg-surface-2` `bg-surface-3`                                                                |
+| Texto       | `text-text` `text-text-2` `text-text-3` `text-text-inv`                                                           |
+| Marca       | `bg-primary` `bg-primary-soft` `text-primary-ink` `bg-primary-hover`                                              |
+| Bordes      | `border-border` `border-border-strong`                                                                            |
+| Estados     | `bg-state-reported` `bg-state-review` `bg-state-taken` `bg-state-progress` `bg-state-resolved` + `-soft`          |
+| Urgencia    | `bg-urgency-high` `bg-urgency-mid` `bg-urgency-low`                                                               |
+| Tipografía  | `text-display` `text-h1` `text-h2` `text-h3` `text-body` `text-body-bold` `text-caption` `text-micro` `text-data` |
+| Fuentes     | `font-manrope` `font-manrope-md` `font-manrope-sb` `font-manrope-bd` `font-manrope-xb` `font-mono` `font-mono-md` |
+| Radios      | `rounded-sm` (10) `rounded-md` (14) `rounded-lg` (20) `rounded-xl` (28) `rounded-pill` (999) `rounded-fab` (18)   |
+| Sombras web | `shadow-sm` `shadow-md` `shadow-lg`                                                                               |
 
 ### Regla de uso
 
@@ -303,13 +276,13 @@ constants/theme.ts
 
 ### Gotchas NativeWind confirmados
 
-| Problema | Solución |
-| --- | --- |
-| OKLCH no funciona en Android/iOS | Usar HEX en `colors` de `theme.ts` — RN no parsea OKLCH |
-| Texto todo del mismo tamaño | `fontSize` debe estar en `tailwind.config.js` — no basta con definirlo en `theme.ts` |
-| `contentContainerClassName` no aplica en nativo | Usar `<View className="...">` wrapper dentro del `<ScrollView>` |
-| Fuentes no cargan en Expo Go | `expo-font` plugin requiere development build (`expo run:android`) |
-| Estilos no se actualizan tras editar config | `npx expo start --clear` — el cache de NativeWind queda desactualizado |
+| Problema                                        | Solución                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------ |
+| OKLCH no funciona en Android/iOS                | Usar HEX en `colors` de `theme.ts` — RN no parsea OKLCH                              |
+| Texto todo del mismo tamaño                     | `fontSize` debe estar en `tailwind.config.js` — no basta con definirlo en `theme.ts` |
+| `contentContainerClassName` no aplica en nativo | Usar `<View className="...">` wrapper dentro del `<ScrollView>`                      |
+| Fuentes no cargan en Expo Go                    | `expo-font` plugin requiere development build (`expo run:android`)                   |
+| Estilos no se actualizan tras editar config     | `npx expo start --clear` — el cache de NativeWind queda desactualizado               |
 
 ## Escalabilidad de la arquitectura
 
