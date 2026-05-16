@@ -1,28 +1,10 @@
 import type { ViewStyle } from 'react-native'
 import { Text, useWindowDimensions, View } from 'react-native'
 
-import { Button } from '@/components/ui/button'
 import { FloatingTag, type FloatingTagVariant } from '@/components/ui/floating-tag'
 import { PhotoCard } from '@/components/ui/photo-card'
-import { Colors } from '@/constants/theme'
 
 import OnboardingHeader from './onboarding-header'
-
-const StepDots = ({ step, total }: { step: number; total: number }) => (
-  <View className="flex-row items-center gap-1.5">
-    {Array.from({ length: total }, (_, i) => (
-      <View
-        key={i}
-        style={{
-          width: i + 1 === step ? 20 : 6,
-          height: 6,
-          borderRadius: 3,
-          backgroundColor: i + 1 === step ? Colors.ink : Colors.borderStrong,
-        }}
-      />
-    ))}
-  </View>
-)
 
 export interface SlideTag {
   label: string
@@ -35,28 +17,18 @@ interface OnboardingSlideProps {
   image: string
   cardRotate?: number
   tags: SlideTag[]
+  kicker?: string
   title: string
   description: string
-  step: number
-  totalSteps: number
-  onNext: () => void
-  nextLabel?: string
-  isLastStep?: boolean
-  onLogin?: () => void
 }
 
 const OnboardingSlide = ({
   image,
   cardRotate = -3,
   tags,
+  kicker,
   title,
   description,
-  step,
-  totalSteps,
-  onNext,
-  nextLabel = 'Siguiente',
-  isLastStep = false,
-  onLogin,
 }: OnboardingSlideProps) => {
   const { width } = useWindowDimensions()
 
@@ -81,32 +53,15 @@ const OnboardingSlide = ({
         </PhotoCard>
       </View>
 
-      <View className="gap-1 px-screen pb-4">
+      <View className="px-screen gap-1 pb-4">
+        {kicker && (
+          <Text className="mb-1 font-manrope-sb text-kicker uppercase tracking-widest text-primary">
+            {kicker}
+          </Text>
+        )}
         <Text className="text-4xl font-extrabold text-ink">{title}</Text>
         <Text className="text-sm text-ink-2">{description}</Text>
       </View>
-
-      <View className="flex-row items-center justify-between px-screen pb-8 pt-2">
-        <StepDots step={step} total={totalSteps} />
-
-        <Button
-          label={nextLabel}
-          variant="primary"
-          size="md"
-          icon="arrow-forward"
-          iconPosition="right"
-          onPress={onNext}
-        />
-      </View>
-
-      {isLastStep && onLogin && (
-        <Text className="px-screen pb-6 text-center text-sm text-ink-2">
-          ¿Ya tienes cuenta?{' '}
-          <Text className="text-primary" onPress={onLogin}>
-            Inicia sesión
-          </Text>
-        </Text>
-      )}
     </View>
   )
 }

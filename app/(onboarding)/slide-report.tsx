@@ -1,16 +1,15 @@
-import { router } from 'expo-router'
-
 import OnboardingSlide from './_components/onboarding-slide'
 
 const IMAGE =
   'https://plus.unsplash.com/premium_photo-1668114375111-e90b5e975df6?q=80&w=1469&auto=format&fit=crop'
 
-const FeaturesScreen = () => (
+const SlideReportScreen = () => (
   <OnboardingSlide
     image={IMAGE}
     cardRotate={4}
-    title={'Sube tu caso en\nmenos de 30 segundos'}
-    description="Foto, ubicación y tipo de animal. El mapa lo muestra al instante para que alguien pueda ir."
+    kicker="01 · REPORTA"
+    title={'Sube el caso en\nmenos de 30 segundos'}
+    description="Foto, ubicación GPS y una referencia escrita. La comunidad lo verá al instante para coordinar el rescate."
     tags={[
       {
         label: '🐾 Miraflores, Lima',
@@ -24,10 +23,7 @@ const FeaturesScreen = () => (
         getStyle: (w, h) => ({ bottom: h * 0.1, right: -(w * 0.22) }),
       },
     ]}
-    step={2}
-    totalSteps={3}
-    onNext={() => router.push('/(onboarding)/join')}
   />
 )
 
-export default FeaturesScreen
+export default SlideReportScreen

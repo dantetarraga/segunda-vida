@@ -4,41 +4,48 @@ import { Text, View } from 'react-native'
 import { Button } from '@/components/ui/button'
 
 import OnboardingHeader from './_components/onboarding-header'
-import WelcomeCluster from './_components/welcome-cluster'
+import WelcomeGlow from './_components/welcome-glow'
+import WelcomeHero from './_components/welcome-hero'
 
-const WelcomeScreen = () => (
-  <View className="flex-1">
-    <OnboardingHeader />
+const WelcomeScreen = () => {
+  const handleGoToLogin = () => router.replace('/(auth)/login')
+  const handleGoToSlide = () => router.push('/(onboarding)/slide-report')
 
-    <View className="flex-1 items-center justify-center">
-      <WelcomeCluster />
-    </View>
+  return (
+    <View className="flex-1" style={{ overflow: 'visible' }}>
+      <WelcomeGlow />
+      <OnboardingHeader />
 
-    <View className="gap-1 px-screen pb-8 pt-4">
-      <Text className="text-4xl font-extrabold text-ink">
-        Cada calle <Text className="text-primary">tiene</Text> una historia. Vamos a cambiarla.
-      </Text>
-      <Text className="text-sm text-ink-2">
-        Reporta, ayuda y conecta con la red de rescate animal más activa de Arequipa.
-      </Text>
+      <View className="flex-1 items-center justify-center">
+        <WelcomeHero />
+      </View>
 
-      <Button
-        label="Empezar"
-        variant="primary"
-        size="lg"
-        fullWidth
-        className="mt-4"
-        onPress={() => router.push('/(onboarding)/features')}
-      />
-
-      <Text className="mt-3 text-center text-sm text-ink-2">
-        ¿Ya tienes cuenta?{' '}
-        <Text className="text-primary" onPress={() => router.replace('/(auth)/login')}>
-          Inicia sesión
+      <View className="px-screen gap-1 pb-8 pt-4">
+        <Text className="text-4xl font-extrabold text-ink">
+          Cada calle <Text className="text-primary">tiene</Text> una historia. Vamos a cambiarla.
         </Text>
-      </Text>
+        <Text className="text-sm text-ink-2">
+          Reporta, ayuda y conecta con la red de rescate animal más activa de Arequipa.
+        </Text>
+
+        <Button
+          label="Empezar"
+          variant="primary"
+          size="lg"
+          fullWidth
+          className="mt-4"
+          onPress={handleGoToSlide}
+        />
+
+        <Text className="mt-3 text-center text-sm text-ink-2">
+          ¿Ya tienes cuenta?{' '}
+          <Text className="text-primary" onPress={handleGoToLogin}>
+            Inicia sesión
+          </Text>
+        </Text>
+      </View>
     </View>
-  </View>
-)
+  )
+}
 
 export default WelcomeScreen

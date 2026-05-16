@@ -15,7 +15,7 @@ const OnboardingHeader = () => {
         <Text className="text-2xl text-primary">Vida</Text>
       </Text>
 
-      {step > 1 && (
+      {step > 0 && (
         <Pressable
           hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
