@@ -4,8 +4,6 @@ const KEYS = {
   hasSeenOnboarding: 'sv_has_seen_onboarding',
 } as const
 
-// ─── Onboarding ───────────────────────────────────────────────────────────────
-
 export async function getHasSeenOnboarding(): Promise<boolean> {
   const value = await SecureStore.getItemAsync(KEYS.hasSeenOnboarding)
   return value === 'true'
