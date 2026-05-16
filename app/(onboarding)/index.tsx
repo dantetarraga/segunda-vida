@@ -4,7 +4,6 @@ import { Text, View } from 'react-native'
 import { Button } from '@/components/ui/button'
 
 import OnboardingHeader from './_components/onboarding-header'
-import WelcomeGlow from './_components/welcome-glow'
 import WelcomeHero from './_components/welcome-hero'
 
 const WelcomeScreen = () => {
@@ -12,8 +11,7 @@ const WelcomeScreen = () => {
   const handleGoToSlide = () => router.push('/(onboarding)/slide-report')
 
   return (
-    <View className="flex-1" style={{ overflow: 'visible' }}>
-      <WelcomeGlow />
+    <View className="flex-1">
       <OnboardingHeader />
 
       <View className="flex-1 items-center justify-center">
