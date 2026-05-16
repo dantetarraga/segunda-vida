@@ -9,7 +9,7 @@ const OnboardingHeader = () => {
   const handleSkip = () => router.replace('/(auth)/login')
 
   return (
-    <View className="flex-row items-center justify-between px-[18px] pb-1 pt-2">
+    <View className="flex-row items-center justify-between px-screen pb-1 pt-2">
       <Text className="text-2xl font-extrabold text-ink">
         Segunda
         <Text className="text-2xl text-primary">Vida</Text>
@@ -21,7 +21,7 @@ const OnboardingHeader = () => {
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
           onPress={handleSkip}
         >
-          <Text className="text-sm text-black">Saltar</Text>
+          <Text className="text-sm text-ink-2">Saltar</Text>
         </Pressable>
       )}
     </View>

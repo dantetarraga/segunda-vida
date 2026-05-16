@@ -1,16 +1,14 @@
-import {
-  createContext,
-  use,
-  useMemo,
-  useState,
-  type Dispatch,
-  type ReactNode,
-  type SetStateAction,
-} from 'react'
+import { useSegments } from 'expo-router'
+import { createContext, use, type ReactNode } from 'react'
+
+const STEP_MAP: Record<string, number> = {
+  index: 1,
+  features: 2,
+  join: 3,
+}
 
 interface OnboardingContextValue {
   step: number
-  setStep: Dispatch<SetStateAction<number>>
 }
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null)
@@ -30,15 +28,9 @@ interface OnboardingProviderProps {
 }
 
 export default function OnboardingProvider({ children }: OnboardingProviderProps) {
-  const [step, setStep] = useState(1)
+  const segments = useSegments()
+  const currentSegment = segments[segments.length - 1] ?? 'index'
+  const step = STEP_MAP[currentSegment] ?? 1
 
-  const value = useMemo(
-    () => ({
-      step,
-      setStep,
-    }),
-    [step]
-  )
-
-  return <OnboardingContext value={value}>{children}</OnboardingContext>
+  return <OnboardingContext value={{ step }}>{children}</OnboardingContext>
 }

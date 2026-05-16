@@ -2,7 +2,7 @@
 // Los tokens vienen de constants/theme.ts (fuente de verdad única).
 // jiti (incluido por NativeWind) resuelve el .ts directamente.
 
-const { colors, fontFamily, fontSize, borderRadius, boxShadow } = require('./constants/theme.ts')
+const { colors, fontFamily, fontSize, borderRadius, boxShadow, Layout } = require('./constants/theme.ts')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -15,6 +15,9 @@ module.exports = {
       fontSize,
       borderRadius,
       boxShadow,
+      spacing: {
+        screen: `${Layout.screenPaddingH}px`,
+      },
     },
   },
   plugins: [],

@@ -34,7 +34,7 @@ const VARIANTS = {
   },
 } as const
 
-type FloatingTagVariant = keyof typeof VARIANTS
+export type FloatingTagVariant = keyof typeof VARIANTS
 
 interface FloatingTagProps {
   label: string
