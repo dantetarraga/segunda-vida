@@ -1,0 +1,124 @@
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import type { ComponentProps } from 'react'
+import { useState } from 'react'
+import type { PressableProps, StyleProp, ViewStyle } from 'react-native'
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
+
+import { Colors } from '@/constants/theme'
+
+// ─── Specs §9.1 Design System ─────────────────────────────────────────────────
+const SIZES = {
+  sm: { height: 34, paddingHorizontal: 14, fontSize: 13, borderRadius: 10, gap: 6, iconSize: 16 },
+  md: { height: 44, paddingHorizontal: 18, fontSize: 14.5, borderRadius: 12, gap: 8, iconSize: 18 },
+  lg: {
+    height: 52,
+    paddingHorizontal: 22,
+    fontSize: 15.5,
+    borderRadius: 14,
+    gap: 10,
+    iconSize: 20,
+  },
+} as const
+
+const VARIANTS = {
+  primary: { bg: Colors.primary, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
+  secondary: { bg: Colors.surface, fg: Colors.ink, border: Colors.borderStrong, borderWidth: 1 },
+  soft: { bg: Colors.primarySoft, fg: Colors.primaryInk, border: 'transparent', borderWidth: 0 },
+  ghost: { bg: 'transparent', fg: Colors.ink, border: 'transparent', borderWidth: 0 },
+  dark: { bg: Colors.ink, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
+  danger: { bg: Colors.urgencyHigh, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
+} as const
+
+type Variant = keyof typeof VARIANTS
+type Size = keyof typeof SIZES
+
+interface ButtonProps extends Omit<PressableProps, 'style'> {
+  label: string
+  variant?: Variant
+  size?: Size
+  icon?: ComponentProps<typeof MaterialIcons>['name']
+  iconPosition?: 'left' | 'right'
+  loading?: boolean
+  /** Ocupa el 100% del ancho del padre. */
+  fullWidth?: boolean
+  style?: StyleProp<ViewStyle>
+}
+
+export function Button({
+  label,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'left',
+  loading = false,
+  fullWidth = false,
+  disabled,
+  style,
+  onPressIn,
+  onPressOut,
+  ...props
+}: ButtonProps) {
+  const [pressed, setPressed] = useState(false)
+
+  const s = SIZES[size]
+  const v = VARIANTS[variant]
+  const isDisabled = disabled || loading
+
+  return (
+    <Pressable
+      onPressIn={(e) => {
+        setPressed(true)
+        onPressIn?.(e)
+      }}
+      onPressOut={(e) => {
+        setPressed(false)
+        onPressOut?.(e)
+      }}
+      disabled={isDisabled}
+      style={[
+        styles.base,
+        {
+          height: s.height,
+          paddingHorizontal: s.paddingHorizontal,
+          borderRadius: s.borderRadius,
+          backgroundColor: v.bg,
+          borderColor: v.border,
+          borderWidth: v.borderWidth,
+          gap: icon && !loading ? s.gap : 0,
+          alignSelf: fullWidth ? 'stretch' : 'flex-start',
+          opacity: isDisabled ? 0.45 : pressed ? 0.85 : 1,
+        },
+        style,
+      ]}
+      {...props}
+    >
+      {loading ? (
+        <ActivityIndicator size="small" color={v.fg} />
+      ) : (
+        <>
+          {icon && iconPosition === 'left' && (
+            <MaterialIcons name={icon} size={s.iconSize} color={v.fg} />
+          )}
+          <Text
+            className="font-manrope-sb"
+            style={{ fontSize: s.fontSize, color: v.fg }}
+            numberOfLines={1}
+          >
+            {label}
+          </Text>
+          {icon && iconPosition === 'right' && (
+            <MaterialIcons name={icon} size={s.iconSize} color={v.fg} />
+          )}
+        </>
+      )}
+    </Pressable>
+  )
+}
+
+const styles = StyleSheet.create({
+  base: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})

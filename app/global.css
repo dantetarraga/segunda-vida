@@ -1,0 +1,29 @@
+/* Segunda Vida · Global styles
+   App nativa (iOS / Android) — sin web.
+   NativeWind procesa este archivo en el build; no es CSS de navegador.
+   No usar :root, @keyframes ni media queries — no aplican en React Native.
+   Animaciones → Reanimated. Reducción de movimiento → AccessibilityInfo.isReduceMotionEnabled() */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Utilidades custom ──────────────────────────────────────────────────────
+   NativeWind compila estas clases en el StyleSheet nativo.
+   Propiedades no soportadas por RN son ignoradas silenciosamente.
+*/
+@layer utilities {
+  /* Fuente monoespaciada para datos — IDs, coords, montos, horas */
+  .mono {
+    font-family: JetBrainsMono_400Regular;
+  }
+
+  /* Eyebrow / kicker: mono uppercase con tracking */
+  .kicker {
+    font-family: JetBrainsMono_400Regular;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+}
