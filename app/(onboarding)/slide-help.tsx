@@ -14,13 +14,13 @@ const SlideHelpScreen = () => (
       {
         text: '🔔 Caso cerca de ti',
         rotate: -3,
-        getStyle: (w, h) => ({ top: h * 0.1, left: -(w * 0.3) }),
+        position: { top: 0.1, left: -0.3 },
       },
       {
         text: '🤝 Yo puedo ayudar',
         variant: 'primary',
         rotate: 4,
-        getStyle: (w, h) => ({ bottom: h * 0.1, right: -(w * 0.22) }),
+        position: { bottom: 0.1, right: -0.22 },
       },
     ]}
   />
