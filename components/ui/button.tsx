@@ -6,9 +6,9 @@ import { Colors } from '@/constants/theme'
 import { Icon, type AntDesignIconName, type MaterialIconName } from '@/components/ui/icon'
 
 const SIZES = {
-  sm: { height: 34, paddingHorizontal: 14, fontSize: 13, borderRadius: 10, gap: 6, iconSize: 16 },
-  md: { height: 44, paddingHorizontal: 18, fontSize: 14.5, borderRadius: 12, gap: 8, iconSize: 18 },
-  lg: { height: 52, paddingHorizontal: 22, fontSize: 15.5, borderRadius: 14, gap: 10, iconSize: 20 },
+  sm: { height: 34, paddingHorizontal: 14, fontClass: 'text-btn-sm', borderRadius: 10, gap: 6,  iconSize: 16 },
+  md: { height: 44, paddingHorizontal: 18, fontClass: 'text-btn-md', borderRadius: 12, gap: 8,  iconSize: 18 },
+  lg: { height: 52, paddingHorizontal: 22, fontClass: 'text-btn-lg', borderRadius: 14, gap: 10, iconSize: 20 },
 } as const
 
 const VARIANTS = {
@@ -85,7 +85,7 @@ export function Button({
           {icon && iconPosition === 'left' && (
             <Icon library={iconLibrary} name={icon as any} size={s.iconSize} color={v.fg} />
           )}
-          <Text className="font-manrope-sb" style={{ fontSize: s.fontSize, color: v.fg }} numberOfLines={1}>
+          <Text className={`font-manrope-sb ${s.fontClass}`} style={{ color: v.fg }} numberOfLines={1}>
             {label}
           </Text>
           {icon && iconPosition === 'right' && (

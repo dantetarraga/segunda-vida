@@ -110,6 +110,9 @@ export const fontSize = {
   micro:       ['11px', { lineHeight: '14px' }],
   kicker:      ['11px', { lineHeight: '11px' }],
   data:        ['12px', { lineHeight: '16px' }],
+  'btn-sm':    ['13px',   { lineHeight: '16px' }],
+  'btn-md':    ['14.5px', { lineHeight: '18px' }],
+  'btn-lg':    ['15.5px', { lineHeight: '20px' }],
 }
 
 // box-shadow es web-only; en nativo usar Shadow de abajo

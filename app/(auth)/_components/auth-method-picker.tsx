@@ -27,7 +27,7 @@ export const AuthMethodPicker = ({ onSelectMethod, onGoogle }: AuthMethodPickerP
         label="Continuar con Google"
         variant="secondary"
         fullWidth
-        iconLibrary="antdesign"
+        iconLibrary="custom"
         icon="google"
         onPress={onGoogle}
         accessibilityLabel="Continuar con Google"
