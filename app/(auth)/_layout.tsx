@@ -1,4 +1,4 @@
-import { router, Stack, usePathname } from 'expo-router'
+import { router, Slot, usePathname } from 'expo-router'
 import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -35,18 +35,9 @@ const AuthLayout = () => {
           </View>
         )}
 
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: 'transparent' },
-            animation: 'slide_from_right',
-          }}
-        >
-          <Stack.Screen name="index" options={{ animation: 'fade' }} />
-          <Stack.Screen name="login" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="register" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="forgot-password" options={{ animation: 'slide_from_bottom' }} />
-        </Stack>
+        <View style={{ flex: 1 }}>
+          <Slot />
+        </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   )

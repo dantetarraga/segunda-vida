@@ -61,20 +61,22 @@ export const LoginForm = ({
             required
           />
 
-          <View className="flex-row items-center justify-between">
-            <Checkbox
-              checked={remember}
-              onChange={setRemember}
-              label="Recuérdame"
-              accessibilityLabel="Recuérdame en este dispositivo"
-            />
+          <View className="flex-row items-center gap-3">
+            <View className="flex-1">
+              <Checkbox
+                checked={remember}
+                onChange={setRemember}
+                label="Recuérdame"
+                accessibilityLabel="Recuérdame en este dispositivo"
+              />
+            </View>
             <Pressable
               hitSlop={8}
               onPress={onForgotPassword}
               accessibilityRole="button"
               accessibilityLabel="¿Olvidaste tu contraseña?"
             >
-              <Text className="text-body text-primary">¿Olvidaste tu contraseña?</Text>
+              <Text className="text-sm text-primary">¿Olvidaste tu contraseña?</Text>
             </Pressable>
           </View>
         </Animated.View>
