@@ -26,12 +26,13 @@ const LOGIN_COPY = {
 }
 
 interface LoginFormProps {
+  initialMethod?: Method
   onSuccess: () => void
   onSwitchToRegister: () => void
 }
 
-export const LoginForm = ({ onSuccess, onSwitchToRegister }: LoginFormProps) => {
-  const [method, setMethod] = useState<Method>('email')
+export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegister }: LoginFormProps) => {
+  const [method, setMethod] = useState<Method>(initialMethod)
   const [remember, setRemember] = useState(true)
 
   const isEmail = method === 'email'
