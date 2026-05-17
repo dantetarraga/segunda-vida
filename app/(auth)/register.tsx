@@ -19,9 +19,7 @@ export default function RegisterScreen() {
         key={method}
         method={method}
         onMethodChange={setMethod}
-        onSuccess={(currentMethod, contact) =>
-          router.replace(`/(auth)/verify?method=${currentMethod}&contact=${encodeURIComponent(contact)}`)
-        }
+        onSuccess={() => router.replace('/(tabs)')}
         onSwitchToLogin={(currentMethod) =>
           router.replace(`/(auth)/login?method=${currentMethod}`)
         }
