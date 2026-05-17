@@ -4,8 +4,8 @@ import { Icon, type MaterialIconName } from '@/components/ui/icon'
 import { Colors } from '@/constants/theme'
 
 const SIZE_CONFIG = {
-  sm: { box: 64, radius: 20, icon: 28 },
-  lg: { box: 76, radius: 24, icon: 32 },
+  sm: { box: 64, radius: 18, icon: 26 },
+  lg: { box: 76, radius: 22, icon: 30 },
 }
 
 interface AuthHeaderProps {
@@ -14,6 +14,8 @@ interface AuthHeaderProps {
   subtitle: string
   align?: 'left' | 'center'
   size?: 'sm' | 'lg'
+  backgroundColor?: string
+  iconColor?: string
 }
 
 export const AuthHeader = ({
@@ -22,6 +24,8 @@ export const AuthHeader = ({
   subtitle,
   align = 'left',
   size = 'sm',
+  backgroundColor = Colors.primary,
+  iconColor = Colors.surface,
 }: AuthHeaderProps) => {
   const s = SIZE_CONFIG[size]
   const centered = align === 'center'
@@ -33,23 +37,19 @@ export const AuthHeader = ({
           width: s.box,
           height: s.box,
           borderRadius: s.radius,
-          backgroundColor: Colors.primary,
+          backgroundColor: backgroundColor,
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Icon name={icon} size={s.icon} color={Colors.surface} />
+        <Icon name={icon} size={s.icon} color={iconColor} />
       </View>
 
       <View className={`gap-1 ${centered ? 'items-center' : ''}`}>
-        <Text
-          className={`text-h1 font-manrope-xb text-ink ${centered ? 'text-center' : ''}`}
-        >
+        <Text className={`text-h1 font-bold text-ink ${centered ? 'text-center' : ''}`}>
           {title}
         </Text>
-        <Text className={`text-body text-ink-3 ${centered ? 'text-center' : ''}`}>
-          {subtitle}
-        </Text>
+        <Text className={`text-sm text-ink-3 ${centered ? 'text-center' : ''}`}>{subtitle}</Text>
       </View>
     </View>
   )

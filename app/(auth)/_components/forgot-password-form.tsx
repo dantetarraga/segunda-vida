@@ -1,9 +1,10 @@
 import { View } from 'react-native'
 import Animated, { FadeIn } from 'react-native-reanimated'
 
-import { Button } from '@/components/ui/button'
 import { FormError } from '@/components/form-error'
 import { InputField } from '@/components/input-field'
+import { Button } from '@/components/ui/button'
+import { Colors } from '@/constants/theme'
 import { useForgotPasswordForm } from '../_hooks/use-forgot-password-form'
 import { AuthFooterLink } from './auth-footer-link'
 import { AuthHeader } from './auth-header'
@@ -20,9 +21,11 @@ export const ForgotPasswordForm = ({ onSuccess, onBack }: ForgotPasswordFormProp
     <View className="flex-1 justify-between px-screen pb-8 pt-6">
       <Animated.View entering={FadeIn.duration(200)} className="gap-6">
         <AuthHeader
-          icon="lock"
-          title="Recuperar contraseña"
-          subtitle="Te enviaremos un correo para restablecer tu contraseña."
+          icon="lock-reset"
+          title="¿Olvidaste tu contraseña?"
+          subtitle="Ingresa el correo de tu cuenta y te enviamos un enlace para crear una nueva."
+          backgroundColor={Colors.secondarySoft}
+          iconColor={Colors.secondaryInk}
         />
 
         <InputField
@@ -42,7 +45,7 @@ export const ForgotPasswordForm = ({ onSuccess, onBack }: ForgotPasswordFormProp
         <FormError message={errors.root?.message} />
 
         <Button
-          label="Enviar correo"
+          label="Enviar enlace"
           variant="primary"
           size="lg"
           fullWidth
@@ -53,7 +56,7 @@ export const ForgotPasswordForm = ({ onSuccess, onBack }: ForgotPasswordFormProp
         />
 
         <AuthFooterLink
-          question="¿Recordaste tu contraseña?"
+          question="¿Recordaste? "
           label="Volver al inicio de sesión"
           onPress={onBack}
         />
