@@ -36,7 +36,7 @@ const VARIANTS = {
 
 export type FloatingTagVariant = keyof typeof VARIANTS
 
-interface FloatingTagProps {
+export interface FloatingTagProps {
   label: string
   icon?: ComponentProps<typeof MaterialIcons>['name']
   variant?: FloatingTagVariant

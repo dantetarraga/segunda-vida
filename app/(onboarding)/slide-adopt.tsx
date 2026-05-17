@@ -14,13 +14,13 @@ const SlideAdoptScreen = () => (
       {
         label: '🏠 Listo para adoptar',
         rotate: -2,
-        getStyle: (w, h) => ({ top: h * 0.1, left: -(w * 0.3) }),
+        position: { top: 0.1, left: -0.3 },
       },
       {
         label: '❤️ 12 interesados',
         variant: 'primary',
         rotate: 5,
-        getStyle: (w, h) => ({ bottom: h * 0.1, right: -(w * 0.2) }),
+        position: { bottom: 0.1, right: -0.2 },
       },
     ]}
   />

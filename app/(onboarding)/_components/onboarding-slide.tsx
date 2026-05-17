@@ -1,16 +1,17 @@
-import type { ViewStyle } from 'react-native'
 import { Text, useWindowDimensions, View } from 'react-native'
 
-import { FloatingTag, type FloatingTagVariant } from '@/components/ui/floating-tag'
+import { FloatingTag, type FloatingTagProps } from '@/components/ui/floating-tag'
 import { PhotoCard } from '@/components/ui/photo-card'
 
-import OnboardingHeader from './onboarding-header'
+type TagPosition = {
+  top?: number
+  bottom?: number
+  left?: number
+  right?: number
+}
 
-export interface SlideTag {
-  label: string
-  variant?: FloatingTagVariant
-  rotate?: number
-  getStyle: (cardW: number, cardH: number) => ViewStyle
+type SlideTag = Omit<FloatingTagProps, 'style' | 'className'> & {
+  position: TagPosition
 }
 
 interface OnboardingSlideProps {
@@ -37,17 +38,18 @@ const OnboardingSlide = ({
 
   return (
     <View className="flex-1">
-      <OnboardingHeader />
-
       <View className="flex-1 items-center justify-center">
         <PhotoCard source={{ uri: image }} width={cardW} height={cardH} rotate={cardRotate}>
-          {tags.map((tag, i) => (
+          {tags.map(({ position, ...tagProps }, i) => (
             <FloatingTag
               key={i}
-              label={tag.label}
-              variant={tag.variant}
-              rotate={tag.rotate}
-              style={tag.getStyle(cardW, cardH)}
+              {...tagProps}
+              style={{
+                top: position.top != null ? cardH * position.top : undefined,
+                bottom: position.bottom != null ? cardH * position.bottom : undefined,
+                left: position.left != null ? cardW * position.left : undefined,
+                right: position.right != null ? cardW * position.right : undefined,
+              }}
             />
           ))}
         </PhotoCard>
@@ -59,8 +61,9 @@ const OnboardingSlide = ({
             {kicker}
           </Text>
         )}
+
         <Text className="text-4xl font-extrabold text-ink">{title}</Text>
-        <Text className="text-sm text-ink-2">{description}</Text>
+        <Text className="text-sm leading-6 text-ink-2">{description}</Text>
       </View>
     </View>
   )

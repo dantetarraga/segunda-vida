@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import RadialGlow from '@/components/ui/radial-glow'
 import { Colors } from '@/constants/theme'
 import OnboardingFooter from './_components/onboarding-footer'
+import OnboardingHeader from './_components/onboarding-header'
 import OnboardingProvider, { useOnboarding } from './_hooks/use-onboarding'
 
 const RadialGlowOverlay = () => {
@@ -17,6 +18,8 @@ const OnboardingLayout = () => (
   <OnboardingProvider>
     <View style={{ flex: 1, backgroundColor: Colors.canvas }}>
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.canvas }}>
+        <OnboardingHeader />
+
         <Stack
           screenOptions={{
             headerShown: false,

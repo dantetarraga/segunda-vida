@@ -3,7 +3,6 @@ import { Text, View } from 'react-native'
 
 import { Button } from '@/components/ui/button'
 
-import OnboardingHeader from './_components/onboarding-header'
 import WelcomeHero from './_components/welcome-hero'
 
 const WelcomeScreen = () => {
@@ -12,8 +11,6 @@ const WelcomeScreen = () => {
 
   return (
     <View className="flex-1">
-      <OnboardingHeader />
-
       <View className="flex-1 items-center justify-center">
         <WelcomeHero />
       </View>
