@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router'
-import { View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import RadialGlow from '@/components/ui/radial-glow'
@@ -18,22 +17,20 @@ const RadialGlowOverlay = () => {
 
 const OnboardingLayout = () => (
   <OnboardingProvider>
-    <View style={{ flex: 1, backgroundColor: Colors.canvas }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.canvas }}>
-        <OnboardingHeader />
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.canvas }}>
+      <OnboardingHeader />
 
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: 'slide_from_right',
-            contentStyle: { backgroundColor: 'transparent' },
-          }}
-        />
-        <OnboardingFooter />
-      </SafeAreaView>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right',
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+      <OnboardingFooter />
+    </SafeAreaView>
 
-      <RadialGlowOverlay />
-    </View>
+    <RadialGlowOverlay />
   </OnboardingProvider>
 )
 
