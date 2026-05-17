@@ -32,4 +32,8 @@ export const authService = {
   loginWithGoogle: async (): Promise<void> => {
     await new Promise(r => setTimeout(r, 1000))
   },
+
+  resendOtp: async (_contact: string): Promise<void> => {
+    await new Promise(r => setTimeout(r, 1000))
+  },
 }

@@ -8,8 +8,7 @@ import { Colors } from '@/constants/theme'
 
 const AuthLayout = () => {
   const pathname = usePathname()
-  const showBack = pathname.includes('/login') || pathname.includes('/register') ||
-    pathname.includes('/forgot-password') || pathname.includes('/verify')
+  const showBack = pathname !== '/(auth)'
 
   return (
     <KeyboardAvoidingView

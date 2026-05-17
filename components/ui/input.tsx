@@ -13,7 +13,7 @@ const SIZES = {
 
 type Size = keyof typeof SIZES
 
-interface InputProps extends Omit<TextInputProps, 'style'> {
+export interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string
   error?: string
   helper?: string
@@ -21,6 +21,7 @@ interface InputProps extends Omit<TextInputProps, 'style'> {
   leftIcon?: MaterialIconName
   rightIcon?: MaterialIconName
   onRightIconPress?: () => void
+  required?: boolean
 }
 
 export const Input = ({
@@ -32,6 +33,7 @@ export const Input = ({
   rightIcon,
   onRightIconPress,
   secureTextEntry,
+  required,
   ...props
 }: InputProps) => {
   const [focused, setFocused] = useState(false)
@@ -55,6 +57,9 @@ export const Input = ({
       {label && (
         <Text style={{ fontSize: 12.5, fontFamily: 'Manrope_600SemiBold', color: Colors.ink2 }}>
           {label}
+          {required && (
+            <Text style={{ color: Colors.urgencyHigh }}>{' *'}</Text>
+          )}
         </Text>
       )}
 

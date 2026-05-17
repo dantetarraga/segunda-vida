@@ -2,20 +2,22 @@ import { z } from 'zod'
 
 const emailField = z
   .string()
-  .min(1, { message: 'Ingresa tu correo' })
+  .min(1, { message: 'Este campo es obligatorio' })
   .email({ message: 'Ingresa un correo válido' })
 
 const phoneField = z
   .string()
-  .min(1, { message: 'Ingresa tu número' })
+  .min(1, { message: 'Este campo es obligatorio' })
   .regex(/^\+?[0-9]{9,15}$/, { message: 'Ingresa un número válido' })
 
 const passwordField = z
   .string()
+  .min(1, { message: 'Este campo es obligatorio' })
   .min(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
 
 const strongPasswordField = z
   .string()
+  .min(1, { message: 'Este campo es obligatorio' })
   .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
   .regex(/[A-Z]/, { message: 'Debe incluir al menos una mayúscula' })
   .regex(/[0-9]/, { message: 'Debe incluir al menos un número' })

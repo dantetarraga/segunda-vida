@@ -1,8 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
-import type { Method } from '../_constants/method-config'
 import { authService } from '../_services/auth.service'
 import {
   registerEmailSchema,
@@ -11,13 +9,7 @@ import {
   type RegisterPhoneFields,
 } from '../_schemas/auth.schema'
 
-interface UseRegisterFormOptions {
-  method: Method
-  onSuccess: (contact: string) => void
-}
-
-interface RegisterFormState {
-  control: ReturnType<typeof useForm>['control']
+interface SharedRegisterFormState {
   errors: {
     identifier?: { message?: string }
     password?: { message?: string }
@@ -26,25 +18,36 @@ interface RegisterFormState {
   }
   isSubmitting: boolean
   password: string
-  reset: () => void
   onSubmit: () => void
 }
 
-const useRegisterEmailForm = (onSuccess: (contact: string) => void): RegisterFormState => {
-  const form = useForm<RegisterEmailFields>({ resolver: zodResolver(registerEmailSchema) })
+export interface RegisterEmailFormState extends SharedRegisterFormState {
+  control: ReturnType<typeof useForm<RegisterEmailFields>>['control']
+}
+
+export interface RegisterPhoneFormState extends SharedRegisterFormState {
+  control: ReturnType<typeof useForm<RegisterPhoneFields>>['control']
+}
+
+export function useRegisterEmailForm(onSuccess: (contact: string) => void): RegisterEmailFormState {
+  const form = useForm<RegisterEmailFields>({
+    resolver: zodResolver(registerEmailSchema),
+    defaultValues: { email: '', password: '', confirmPassword: '' },
+  })
 
   const onSubmit = form.handleSubmit(async (data) => {
     try {
       await authService.registerWithEmail(data)
       onSuccess(data.email)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ocurrió un error, intenta de nuevo'
-      form.setError('root', { message })
+      form.setError('root', {
+        message: err instanceof Error ? err.message : 'Ocurrió un error, intenta de nuevo',
+      })
     }
   })
 
   return {
-    control: form.control as ReturnType<typeof useForm>['control'],
+    control: form.control,
     errors: {
       identifier: form.formState.errors.email,
       password: form.formState.errors.password,
@@ -53,26 +56,29 @@ const useRegisterEmailForm = (onSuccess: (contact: string) => void): RegisterFor
     },
     isSubmitting: form.formState.isSubmitting,
     password: form.watch('password') ?? '',
-    reset: form.reset,
     onSubmit,
   }
 }
 
-const useRegisterPhoneForm = (onSuccess: (contact: string) => void): RegisterFormState => {
-  const form = useForm<RegisterPhoneFields>({ resolver: zodResolver(registerPhoneSchema) })
+export function useRegisterPhoneForm(onSuccess: (contact: string) => void): RegisterPhoneFormState {
+  const form = useForm<RegisterPhoneFields>({
+    resolver: zodResolver(registerPhoneSchema),
+    defaultValues: { phone: '', password: '', confirmPassword: '' },
+  })
 
   const onSubmit = form.handleSubmit(async (data) => {
     try {
       await authService.registerWithPhone(data)
       onSuccess(data.phone)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ocurrió un error, intenta de nuevo'
-      form.setError('root', { message })
+      form.setError('root', {
+        message: err instanceof Error ? err.message : 'Ocurrió un error, intenta de nuevo',
+      })
     }
   })
 
   return {
-    control: form.control as ReturnType<typeof useForm>['control'],
+    control: form.control,
     errors: {
       identifier: form.formState.errors.phone,
       password: form.formState.errors.password,
@@ -81,20 +87,6 @@ const useRegisterPhoneForm = (onSuccess: (contact: string) => void): RegisterFor
     },
     isSubmitting: form.formState.isSubmitting,
     password: form.watch('password') ?? '',
-    reset: form.reset,
     onSubmit,
   }
-}
-
-export const useRegisterForm = ({ method, onSuccess }: UseRegisterFormOptions): RegisterFormState => {
-  const emailForm = useRegisterEmailForm(onSuccess)
-  const phoneForm = useRegisterPhoneForm(onSuccess)
-
-  useEffect(() => {
-    emailForm.reset()
-    phoneForm.reset()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [method])
-
-  return method === 'email' ? emailForm : phoneForm
 }

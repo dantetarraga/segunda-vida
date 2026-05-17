@@ -31,7 +31,7 @@ export default function VerifyScreen() {
   const handleResend = async () => {
     setResending(true)
     try {
-      await authService.forgotPassword(contact ?? '')
+      await authService.resendOtp(contact ?? '')
     } finally {
       setResending(false)
     }

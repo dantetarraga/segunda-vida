@@ -1,32 +1,24 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
 import { ScrollView, View } from 'react-native'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { authService } from './_services/auth.service'
+import { FormError } from '@/components/form-error'
+import { FormInput } from '@/components/form-input'
 import { AuthFooterLink } from './_components/auth-footer-link'
 import { AuthHeader } from './_components/auth-header'
 import { ForgotPasswordSuccess } from './_components/forgot-password-success'
-import { forgotPasswordSchema, type ForgotPasswordFields } from './_schemas/auth.schema'
+import { useForgotPasswordForm } from './_hooks/use-forgot-password-form'
 
 export default function ForgotPasswordScreen() {
   const [succeeded, setSucceeded] = useState(false)
 
-  const { control, handleSubmit, formState: { errors, isSubmitting } } =
-    useForm<ForgotPasswordFields>({ resolver: zodResolver(forgotPasswordSchema) })
-
-  const onSubmit = async (data: ForgotPasswordFields) => {
-    await authService.forgotPassword(data.email)
-    setSucceeded(true)
-  }
+  const { control, errors, isSubmitting, onSubmit } = useForgotPasswordForm({
+    onSuccess: () => setSucceeded(true),
+  })
 
   if (succeeded) {
-    return (
-      <ForgotPasswordSuccess onBack={() => router.back()} />
-    )
+    return <ForgotPasswordSuccess onBack={() => router.back()} />
   }
 
   return (
@@ -43,34 +35,29 @@ export default function ForgotPasswordScreen() {
             subtitle="Te enviaremos un correo para restablecer tu contraseña."
           />
 
-          <Controller
+          <FormInput
             control={control}
             name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                label="Correo electrónico"
-                placeholder="tu@correo.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                leftIcon="email"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={errors.email?.message}
-              />
-            )}
+            label="Correo electrónico"
+            placeholder="tu@correo.com"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            leftIcon="email"
+            required
           />
         </View>
 
         <View className="gap-4 pt-8">
+          <FormError message={errors.root?.message} />
+
           <Button
             label="Enviar correo"
             variant="primary"
             size="lg"
             fullWidth
             loading={isSubmitting}
-            onPress={handleSubmit(onSubmit)}
+            onPress={onSubmit}
             accessibilityLabel="Enviar correo de recuperación"
             accessibilityRole="button"
           />
