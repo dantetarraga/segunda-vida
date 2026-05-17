@@ -27,12 +27,27 @@ interface ButtonProps extends Omit<PressableProps, 'style'> {
   label: string
   variant?: Variant
   size?: Size
-  icon?: MaterialIconName | AntDesignIconName
-  iconLibrary?: 'material' | 'antdesign'
+  icon?: MaterialIconName | AntDesignIconName | 'google'
+  iconLibrary?: 'material' | 'antdesign' | 'custom'
   iconPosition?: 'left' | 'right'
   loading?: boolean
   fullWidth?: boolean
   style?: StyleProp<ViewStyle>
+}
+
+const renderIcon = (
+  library: 'material' | 'antdesign' | 'custom' | undefined,
+  name: MaterialIconName | AntDesignIconName | 'google',
+  size: number,
+  color: string,
+) => {
+  if (library === 'custom' && name === 'google') {
+    return <Icon library="custom" name="google" size={size} />
+  }
+  if (library === 'antdesign') {
+    return <Icon library="antdesign" name={name as AntDesignIconName} size={size} color={color} />
+  }
+  return <Icon name={name as MaterialIconName} size={size} color={color} />
 }
 
 export function Button({
@@ -82,15 +97,11 @@ export function Button({
         <ActivityIndicator size="small" color={v.fg} />
       ) : (
         <>
-          {icon && iconPosition === 'left' && (
-            <Icon library={iconLibrary} name={icon as any} size={s.iconSize} color={v.fg} />
-          )}
+          {icon && iconPosition === 'left' && renderIcon(iconLibrary, icon, s.iconSize, v.fg)}
           <Text className={`font-manrope-sb ${s.fontClass}`} style={{ color: v.fg }} numberOfLines={1}>
             {label}
           </Text>
-          {icon && iconPosition === 'right' && (
-            <Icon library={iconLibrary} name={icon as any} size={s.iconSize} color={v.fg} />
-          )}
+          {icon && iconPosition === 'right' && renderIcon(iconLibrary, icon, s.iconSize, v.fg)}
         </>
       )}
     </Pressable>
