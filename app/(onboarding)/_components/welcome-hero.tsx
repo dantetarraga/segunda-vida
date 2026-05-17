@@ -52,6 +52,7 @@ const WelcomeHero = () => {
         <FloatingTag
           label="🐾 Lima, Miraflores"
           rotate={-2}
+          className="absolute"
           style={{ top: main * LAYOUT.tagTopRatio, left: -(main * LAYOUT.tagLeftRatio) }}
         />
 
@@ -59,6 +60,7 @@ const WelcomeHero = () => {
           label="❤️ 47 ayudaron"
           variant="primary"
           rotate={5}
+          className="absolute"
           style={{ bottom: main * LAYOUT.tagBottomRatio, right: -(main * LAYOUT.tagRightRatio) }}
         />
       </PhotoCard>

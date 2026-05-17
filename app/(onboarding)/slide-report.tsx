@@ -12,15 +12,15 @@ const SlideReportScreen = () => (
     description="Foto, ubicación GPS y una referencia escrita. La comunidad lo verá al instante para coordinar el rescate."
     tags={[
       {
-        label: '🐾 Miraflores, Lima',
+        text: '🐾 Miraflores, Lima',
         rotate: -2,
-        position: { top: 0.1, left: -0.28 },
+        getStyle: (w, h) => ({ top: h * 0.1, left: -(w * 0.28) }),
       },
       {
-        label: '📍 Hace 2 min',
+        text: '📍 Hace 2 min',
         variant: 'primary',
         rotate: 5,
-        position: { bottom: 0.1, right: -0.22 },
+        getStyle: (w, h) => ({ bottom: h * 0.1, right: -(w * 0.22) }),
       },
     ]}
   />

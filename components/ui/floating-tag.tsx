@@ -57,7 +57,7 @@ export function FloatingTag({
 
   return (
     <View
-      className={cn('absolute flex-row items-center gap-1 rounded-pill px-2.5 py-1.5', className)}
+      className={cn('flex-row items-center gap-1 rounded-pill px-2.5 py-1.5', className)}
       style={[
         Shadow.sm,
         {

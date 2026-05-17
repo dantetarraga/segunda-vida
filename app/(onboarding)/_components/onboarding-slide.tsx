@@ -1,17 +1,14 @@
+import type { ViewStyle } from 'react-native'
 import { Text, useWindowDimensions, View } from 'react-native'
 
-import { FloatingTag, type FloatingTagProps } from '@/components/ui/floating-tag'
+import { FloatingTag, type FloatingTagVariant } from '@/components/ui/floating-tag'
 import { PhotoCard } from '@/components/ui/photo-card'
 
-type TagPosition = {
-  top?: number
-  bottom?: number
-  left?: number
-  right?: number
-}
-
-type SlideTag = Omit<FloatingTagProps, 'style' | 'className'> & {
-  position: TagPosition
+interface SlideTag {
+  text: string
+  variant?: FloatingTagVariant
+  rotate?: number
+  getStyle: (cardW: number, cardH: number) => ViewStyle
 }
 
 interface OnboardingSlideProps {
@@ -40,16 +37,13 @@ const OnboardingSlide = ({
     <View className="flex-1">
       <View className="flex-1 items-center justify-center">
         <PhotoCard source={{ uri: image }} width={cardW} height={cardH} rotate={cardRotate}>
-          {tags.map(({ position, ...tagProps }, i) => (
+          {tags.map(({ text, variant, rotate, getStyle }, i) => (
             <FloatingTag
               key={i}
-              {...tagProps}
-              style={{
-                top: position.top != null ? cardH * position.top : undefined,
-                bottom: position.bottom != null ? cardH * position.bottom : undefined,
-                left: position.left != null ? cardW * position.left : undefined,
-                right: position.right != null ? cardW * position.right : undefined,
-              }}
+              label={text}
+              variant={variant}
+              rotate={rotate}
+              style={getStyle(cardW, cardH)}
             />
           ))}
         </PhotoCard>

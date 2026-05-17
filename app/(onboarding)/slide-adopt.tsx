@@ -12,15 +12,15 @@ const SlideAdoptScreen = () => (
     description="Conoce a los rescatados listos para adopción, lee su historia y postula desde la app."
     tags={[
       {
-        label: '🏠 Listo para adoptar',
+        text: '🏠 Listo para adoptar',
         rotate: -2,
-        position: { top: 0.1, left: -0.3 },
+        getStyle: (w, h) => ({ top: h * 0.1, left: -(w * 0.3) }),
       },
       {
-        label: '❤️ 12 interesados',
+        text: '❤️ 12 interesados',
         variant: 'primary',
         rotate: 5,
-        position: { bottom: 0.1, right: -0.2 },
+        getStyle: (w, h) => ({ bottom: h * 0.1, right: -(w * 0.2) }),
       },
     ]}
   />
