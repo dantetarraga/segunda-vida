@@ -1,58 +1,48 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useState } from 'react'
+import { Controller } from 'react-hook-form'
 import { Pressable, Text, View } from 'react-native'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Divider } from '@/components/ui/divider'
 import { Input } from '@/components/ui/input'
+import { Colors } from '@/constants/theme'
 import { METHOD_CONFIG, type Method } from '../_constants/method-config'
-import { loginEmailSchema, loginPhoneSchema, type LoginEmailFields, type LoginPhoneFields } from '../_schemas/auth.schema'
-import { AuthDivider } from './auth-divider'
+import { useLoginForm } from '../_hooks/use-login-form'
 import { AuthFooterLink } from './auth-footer-link'
 import { AuthHeader } from './auth-header'
-
-const LOGIN_COPY = {
-  email: {
-    title: 'Iniciar sesión',
-    subtitle: 'Bienvenido de vuelta. Hay 3 casos cerca de tu zona.',
-    submitLabel: 'Iniciar sesión',
-  },
-  phone: {
-    title: 'Entra con tu número',
-    subtitle: 'Te enviaremos un código por SMS para confirmar que eres tú.',
-    submitLabel: 'Enviar código',
-  },
-}
 
 interface LoginFormProps {
   initialMethod?: Method
   onSuccess: () => void
-  onSwitchToRegister: () => void
+  onSwitchToRegister: (currentMethod: Method) => void
+  onForgotPassword?: () => void
+  onGoogle?: () => void
 }
 
-export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegister }: LoginFormProps) => {
+export const LoginForm = ({
+  initialMethod = 'email',
+  onSuccess,
+  onSwitchToRegister,
+  onForgotPassword,
+  onGoogle,
+}: LoginFormProps) => {
   const [method, setMethod] = useState<Method>(initialMethod)
   const [remember, setRemember] = useState(true)
 
   const isEmail = method === 'email'
-  const schema = isEmail ? loginEmailSchema : loginPhoneSchema
   const config = METHOD_CONFIG[method]
-  const copy = LOGIN_COPY[method]
 
-  const { control, handleSubmit, reset, formState: { errors, isSubmitting } } =
-    useForm<LoginEmailFields | LoginPhoneFields>({ resolver: zodResolver(schema) })
-
-  useEffect(() => { reset() }, [method, reset])
-
-  const onSubmit = async (_data: LoginEmailFields | LoginPhoneFields) => {
-    onSuccess()
-  }
+  const { control, errors, isSubmitting, onSubmit } = useLoginForm({ method, onSuccess })
 
   return (
     <View className="flex-1 justify-between px-screen pb-8 pt-6">
       <View className="gap-6">
-        <AuthHeader icon={config.icon} title={copy.title} subtitle={copy.subtitle} />
+        <AuthHeader
+          icon={config.icon}
+          title="Iniciar sesión"
+          subtitle="Bienvenido de vuelta."
+        />
 
         <View className="gap-4">
           <Controller
@@ -69,9 +59,7 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
                 value={value as string}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                error={isEmail
-                  ? (errors as { email?: { message?: string } }).email?.message
-                  : (errors as { phone?: { message?: string } }).phone?.message}
+                error={errors.identifier?.message}
               />
             )}
           />
@@ -94,25 +82,46 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
           />
 
           <View className="flex-row items-center justify-between">
-            <Checkbox checked={remember} onChange={setRemember} label="Recuérdame" />
-            <Pressable hitSlop={8}>
-              <Text className="text-sm text-primary">¿Olvidaste tu contraseña?</Text>
+            <Checkbox
+              checked={remember}
+              onChange={setRemember}
+              label="Recuérdame"
+              accessibilityLabel="Recuérdame en este dispositivo"
+            />
+            <Pressable
+              hitSlop={8}
+              onPress={onForgotPassword}
+              accessibilityRole="button"
+              accessibilityLabel="¿Olvidaste tu contraseña?"
+            >
+              <Text className="text-body text-primary">¿Olvidaste tu contraseña?</Text>
             </Pressable>
           </View>
         </View>
       </View>
 
       <View className="gap-4 pt-8">
+        {errors.root?.message && (
+          <Text
+            style={{ fontSize: 13, fontFamily: 'Manrope_600SemiBold', color: Colors.urgencyHigh }}
+            accessibilityRole="alert"
+          >
+            {errors.root.message}
+          </Text>
+        )}
+
         <Button
-          label={copy.submitLabel}
+          label="Iniciar sesión"
           variant="primary"
           size="lg"
           fullWidth
           loading={isSubmitting}
-          onPress={handleSubmit(onSubmit)}
+          onPress={onSubmit}
+          accessibilityLabel="Iniciar sesión"
+          accessibilityRole="button"
         />
 
-        <AuthDivider />
+        <Divider />
 
         <View className="flex-row gap-3">
           <Button
@@ -121,6 +130,9 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
             icon="google"
             iconLibrary="antdesign"
             style={{ flex: 1 }}
+            onPress={onGoogle}
+            accessibilityLabel="Iniciar sesión con Google"
+            accessibilityRole="button"
           />
           {isEmail ? (
             <Button
@@ -129,6 +141,8 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
               icon="phone"
               style={{ flex: 1 }}
               onPress={() => setMethod('phone')}
+              accessibilityLabel="Cambiar a inicio de sesión con teléfono"
+              accessibilityRole="button"
             />
           ) : (
             <Button
@@ -137,6 +151,8 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
               icon="email"
               style={{ flex: 1 }}
               onPress={() => setMethod('email')}
+              accessibilityLabel="Cambiar a inicio de sesión con correo"
+              accessibilityRole="button"
             />
           )}
         </View>
@@ -144,11 +160,9 @@ export const LoginForm = ({ initialMethod = 'email', onSuccess, onSwitchToRegist
         <AuthFooterLink
           question="¿No tienes cuenta?"
           label="Regístrate"
-          onPress={onSwitchToRegister}
+          onPress={() => onSwitchToRegister(method)}
         />
       </View>
     </View>
   )
 }
-
-export default LoginForm

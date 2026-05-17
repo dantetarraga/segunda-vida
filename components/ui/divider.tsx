@@ -1,10 +1,10 @@
 import { Text, View } from 'react-native'
 
-interface AuthDividerProps {
+interface DividerProps {
   text?: string
 }
 
-export const AuthDivider = ({ text = 'o continúa con' }: AuthDividerProps) => (
+export const Divider = ({ text = 'o continúa con' }: DividerProps) => (
   <View className="flex-row items-center gap-3">
     <View className="flex-1 border-t border-border" />
     <Text className="text-sm text-ink-3">{text}</Text>
@@ -12,4 +12,4 @@ export const AuthDivider = ({ text = 'o continúa con' }: AuthDividerProps) => (
   </View>
 )
 
-export default AuthDivider
+export default Divider

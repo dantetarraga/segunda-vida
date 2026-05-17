@@ -56,11 +56,16 @@ export const registerPhoneSchema = z
     path: ['confirmPassword'],
   })
 
+// ─── Forgot password ──────────────────────────────────────────────────────────
+
+export const forgotPasswordSchema = z.object({
+  email: emailField,
+})
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type LoginEmailFields    = z.infer<typeof loginEmailSchema>
-export type LoginPhoneFields    = z.infer<typeof loginPhoneSchema>
-export type RegisterEmailFields = z.infer<typeof registerEmailSchema>
-export type RegisterPhoneFields = z.infer<typeof registerPhoneSchema>
-
-export default {}
+export type LoginEmailFields     = z.infer<typeof loginEmailSchema>
+export type LoginPhoneFields     = z.infer<typeof loginPhoneSchema>
+export type RegisterEmailFields  = z.infer<typeof registerEmailSchema>
+export type RegisterPhoneFields  = z.infer<typeof registerPhoneSchema>
+export type ForgotPasswordFields = z.infer<typeof forgotPasswordSchema>

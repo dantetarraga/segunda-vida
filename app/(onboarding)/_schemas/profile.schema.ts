@@ -33,5 +33,3 @@ export const profileSchema = z.object({
 })
 
 export type ProfileFields = z.infer<typeof profileSchema>
-
-export default {}

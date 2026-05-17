@@ -42,15 +42,15 @@ export const AuthHeader = ({
       </View>
 
       <View className={`gap-1 ${centered ? 'items-center' : ''}`}>
-        <Text className={`text-3xl font-extrabold text-ink ${centered ? 'text-center' : ''}`}>
+        <Text
+          className={`text-h1 font-manrope-xb text-ink ${centered ? 'text-center' : ''}`}
+        >
           {title}
         </Text>
-        <Text className={`text-sm text-ink-3 ${centered ? 'text-center' : ''}`}>
+        <Text className={`text-body text-ink-3 ${centered ? 'text-center' : ''}`}>
           {subtitle}
         </Text>
       </View>
     </View>
   )
 }
-
-export default AuthHeader

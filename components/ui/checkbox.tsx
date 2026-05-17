@@ -9,10 +9,17 @@ interface CheckboxProps {
   onChange: (checked: boolean) => void
   label?: ReactNode
   size?: number
+  accessibilityLabel?: string
 }
 
-export const Checkbox = ({ checked, onChange, label, size = 20 }: CheckboxProps) => (
-  <Pressable className="flex-row items-center gap-3" onPress={() => onChange(!checked)}>
+export const Checkbox = ({ checked, onChange, label, size = 20, accessibilityLabel }: CheckboxProps) => (
+  <Pressable
+    className="flex-row items-center gap-3"
+    onPress={() => onChange(!checked)}
+    accessibilityRole="checkbox"
+    accessibilityState={{ checked }}
+    accessibilityLabel={accessibilityLabel}
+  >
     <View
       style={{
         width: size,

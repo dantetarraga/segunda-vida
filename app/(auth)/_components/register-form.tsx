@@ -1,97 +1,62 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { Text, View } from 'react-native'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Divider } from '@/components/ui/divider'
 import { Input } from '@/components/ui/input'
+import { PasswordStrengthBar } from '@/components/ui/password-strength-bar'
 import { Colors } from '@/constants/theme'
 import { METHOD_CONFIG, type Method } from '../_constants/method-config'
-import { registerEmailSchema, registerPhoneSchema, type RegisterEmailFields, type RegisterPhoneFields } from '../_schemas/auth.schema'
+import { useRegisterForm } from '../_hooks/use-register-form'
 import { AuthFooterLink } from './auth-footer-link'
 import { AuthHeader } from './auth-header'
 
-const REGISTER_COPY = {
+const REGISTER_COPY: Record<Method, { title: string; subtitle: string }> = {
   email: {
     title: 'Crea tu cuenta con correo',
-    subtitle: 'Te enviaremos un enlace para confirmar que es tuyo.',
+    subtitle: 'Ingresa tu correo y elige una contraseña para empezar.',
   },
   phone: {
     title: 'Crea tu cuenta con número',
-    subtitle: 'Te enviaremos un código SMS para confirmar que es tuyo.',
+    subtitle: 'Ingresa tu número y elige una contraseña para empezar.',
   },
 }
 
-type Strength = 0 | 1 | 2 | 3
-
-const STRENGTH_CONFIG = {
-  0: { label: '',        color: Colors.borderStrong, segments: 0 },
-  1: { label: 'Débil',   color: Colors.urgencyHigh,  segments: 1 },
-  2: { label: 'Regular', color: Colors.primary,      segments: 2 },
-  3: { label: 'Fuerte',  color: Colors.secondary,    segments: 3 },
-} as const
-
-const getStrength = (pwd: string): Strength => {
-  if (!pwd) return 0
-  let score = 0
-  if (pwd.length >= 8)           score++
-  if (/[A-Z]/.test(pwd))         score++
-  if (/[0-9]/.test(pwd))         score++
-  if (/[^A-Za-z0-9]/.test(pwd)) score++
-  return (score <= 1 ? 1 : score <= 2 ? 2 : 3) as Strength
-}
-
-const PasswordStrengthBar = ({ password }: { password: string }) => {
-  if (!password) return null
-  const strength = getStrength(password)
-  const config = STRENGTH_CONFIG[strength]
-  return (
-    <View style={{ gap: 6 }}>
-      <View style={{ flexDirection: 'row', gap: 4 }}>
-        {[1, 2, 3].map(i => (
-          <View
-            key={i}
-            style={{
-              flex: 1, height: 4, borderRadius: 2,
-              backgroundColor: i <= config.segments ? config.color : Colors.borderStrong,
-            }}
-          />
-        ))}
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ fontSize: 11.5, color: Colors.ink3 }}>
-          Mín. 8 caracteres, una mayúscula y un número
-        </Text>
-        <Text style={{ fontSize: 11.5, fontFamily: 'Manrope_600SemiBold', color: config.color }}>
-          {config.label}
-        </Text>
-      </View>
-    </View>
-  )
-}
-
 interface RegisterFormProps {
-  method: Method
-  onSuccess: () => void
-  onSwitchToLogin: () => void
+  initialMethod?: Method
+  onSuccess: (method: Method, contact: string) => void
+  onSwitchToLogin: (currentMethod: Method) => void
+  onGoogle?: () => void
 }
 
-export const RegisterForm = ({ method, onSuccess, onSwitchToLogin }: RegisterFormProps) => {
+export const RegisterForm = ({
+  initialMethod = 'email',
+  onSuccess,
+  onSwitchToLogin,
+  onGoogle,
+}: RegisterFormProps) => {
+  const [method, setMethod] = useState<Method>(initialMethod)
   const [accepted, setAccepted] = useState(false)
+  const [showTermsError, setShowTermsError] = useState(false)
 
   const isEmail = method === 'email'
   const config = METHOD_CONFIG[method]
   const copy = REGISTER_COPY[method]
-  const schema = isEmail ? registerEmailSchema : registerPhoneSchema
 
-  const { control, handleSubmit, watch, formState: { errors, isSubmitting } } =
-    useForm<RegisterEmailFields | RegisterPhoneFields>({ resolver: zodResolver(schema) })
+  const { control, errors, isSubmitting, password, onSubmit } = useRegisterForm({
+    method,
+    onSuccess: (contact) => onSuccess(method, contact),
+  })
 
-  const password = watch('password') ?? ''
-
-  const onSubmit = async (_data: RegisterEmailFields | RegisterPhoneFields) => {
-    onSuccess()
+  const handleSubmitGuarded = () => {
+    if (!accepted) {
+      setShowTermsError(true)
+      return
+    }
+    setShowTermsError(false)
+    onSubmit()
   }
 
   return (
@@ -114,9 +79,7 @@ export const RegisterForm = ({ method, onSuccess, onSwitchToLogin }: RegisterFor
                 value={value as string}
                 onChangeText={onChange}
                 onBlur={onBlur}
-                error={isEmail
-                  ? (errors as { email?: { message?: string } }).email?.message
-                  : (errors as { phone?: { message?: string } }).phone?.message}
+                error={errors.identifier?.message}
               />
             )}
           />
@@ -159,38 +122,97 @@ export const RegisterForm = ({ method, onSuccess, onSwitchToLogin }: RegisterFor
           />
         </View>
 
-        <Checkbox
-          checked={accepted}
-          onChange={setAccepted}
-          label={
-            <Text className="flex-1 text-sm text-ink-2">
-              Acepto los{' '}
-              <Text className="font-bold text-ink">Términos y condiciones</Text>
-              {' '}y la{' '}
-              <Text className="font-bold text-ink">Política de privacidad</Text>
+        <View className="gap-1">
+          <Checkbox
+            checked={accepted}
+            onChange={(v) => {
+              setAccepted(v)
+              if (v) setShowTermsError(false)
+            }}
+            label={
+              <Text className="flex-1 text-body text-ink-3">
+                Acepto los{' '}
+                <Text className="font-manrope-sb text-ink">Términos y condiciones</Text>
+                {' '}y la{' '}
+                <Text className="font-manrope-sb text-ink">Política de privacidad</Text>
+              </Text>
+            }
+            accessibilityLabel="Acepto los términos y condiciones y la política de privacidad"
+          />
+          {showTermsError && (
+            <Text
+              style={{ fontSize: 12, fontFamily: 'Manrope_600SemiBold', color: Colors.urgencyHigh, marginLeft: 4 }}
+              accessibilityRole="alert"
+            >
+              Debes aceptar los términos para continuar
             </Text>
-          }
-        />
+          )}
+        </View>
       </View>
 
-      <View className="gap-3 pt-8">
+      <View className="gap-4 pt-8">
+        {errors.root?.message && (
+          <Text
+            style={{ fontSize: 13, fontFamily: 'Manrope_600SemiBold', color: Colors.urgencyHigh }}
+            accessibilityRole="alert"
+          >
+            {errors.root.message}
+          </Text>
+        )}
+
         <Button
           label="Crear cuenta"
           variant="primary"
           size="lg"
           fullWidth
-          disabled={!accepted}
           loading={isSubmitting}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmitGuarded}
+          accessibilityLabel="Crear cuenta"
+          accessibilityRole="button"
         />
+
+        <Divider />
+
+        <View className="flex-row gap-3">
+          <Button
+            label="Google"
+            variant="secondary"
+            icon="google"
+            iconLibrary="antdesign"
+            style={{ flex: 1 }}
+            onPress={onGoogle}
+            accessibilityLabel="Registrarse con Google"
+            accessibilityRole="button"
+          />
+          {isEmail ? (
+            <Button
+              label="Teléfono"
+              variant="secondary"
+              icon="phone"
+              style={{ flex: 1 }}
+              onPress={() => setMethod('phone')}
+              accessibilityLabel="Cambiar a registro con teléfono"
+              accessibilityRole="button"
+            />
+          ) : (
+            <Button
+              label="Correo"
+              variant="secondary"
+              icon="email"
+              style={{ flex: 1 }}
+              onPress={() => setMethod('email')}
+              accessibilityLabel="Cambiar a registro con correo"
+              accessibilityRole="button"
+            />
+          )}
+        </View>
+
         <AuthFooterLink
           question="¿Ya tienes cuenta?"
           label="Inicia sesión"
-          onPress={onSwitchToLogin}
+          onPress={() => onSwitchToLogin(method)}
         />
       </View>
     </View>
   )
 }
-
-export default RegisterForm
