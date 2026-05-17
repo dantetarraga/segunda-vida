@@ -22,7 +22,27 @@ const strongPasswordField = z
   .regex(/[A-Z]/, { message: 'Debe incluir al menos una mayúscula' })
   .regex(/[0-9]/, { message: 'Debe incluir al menos un número' })
 
-// ─── Login ────────────────────────────────────────────────────────────────────
+// ─── Login (unified) ──────────────────────────────────────────────────────────
+
+export const loginSchema = z.object({
+  identifier: z.string().min(1, { message: 'Este campo es obligatorio' }),
+  password: passwordField,
+})
+
+// ─── Register (unified) ───────────────────────────────────────────────────────
+
+export const registerSchema = z
+  .object({
+    identifier: z.string().min(1, { message: 'Este campo es obligatorio' }),
+    password: strongPasswordField,
+    confirmPassword: z.string().min(1, { message: 'Confirma tu contraseña' }),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Las contraseñas no coinciden',
+    path: ['confirmPassword'],
+  })
+
+// ─── Login (per-method — kept for future backend use) ─────────────────────────
 
 export const loginEmailSchema = z.object({
   email: emailField,
@@ -34,7 +54,7 @@ export const loginPhoneSchema = z.object({
   password: passwordField,
 })
 
-// ─── Registro ─────────────────────────────────────────────────────────────────
+// ─── Register (per-method — kept for future backend use) ──────────────────────
 
 export const registerEmailSchema = z
   .object({
@@ -66,6 +86,8 @@ export const forgotPasswordSchema = z.object({
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+export type LoginFields          = z.infer<typeof loginSchema>
+export type RegisterFields       = z.infer<typeof registerSchema>
 export type LoginEmailFields     = z.infer<typeof loginEmailSchema>
 export type LoginPhoneFields     = z.infer<typeof loginPhoneSchema>
 export type RegisterEmailFields  = z.infer<typeof registerEmailSchema>
