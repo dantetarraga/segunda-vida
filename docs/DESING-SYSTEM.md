@@ -219,11 +219,11 @@ Cada uno tiene su `*-soft` (lightness 0.95 aprox.) para fondos.
 
 **Tamaños:**
 
-| Size | Height    | Padding | Font       | Radio | Gap (icon) |
-| ---- | --------- | ------- | ---------- | ----- | ---------- |
-| `sm` | 34 px     | 0 14    | 13 / 600   | 10 px | 6          |
-| `md` | **44 px** | 0 18    | 14.5 / 600 | 12 px | 8          |
-| `lg` | 52 px     | 0 22    | 15.5 / 600 | 14 px | 10         |
+| Size | Height    | Padding | Font token  | px     | Peso | Radio | Gap (icon) |
+| ---- | --------- | ------- | ----------- | ------ | ---- | ----- | ---------- |
+| `sm` | 34 px     | 0 14    | `text-btn-sm` | 13 px  | 600  | 10 px | 6          |
+| `md` | **44 px** | 0 18    | `text-btn-md` | 14.5 px| 600  | 12 px | 8          |
+| `lg` | 52 px     | 0 22    | `text-btn-lg` | 15.5 px| 600  | 14 px | 10         |
 
 **MD (44 px) es el tamaño por defecto** y respeta el hit target mínimo móvil.
 
@@ -704,6 +704,11 @@ constants/theme.ts
 <Text className="font-manrope-md text-caption">Caption 12px</Text>
 <Text className="font-manrope-sb text-micro">Micro 11px</Text>
 <Text className="font-mono text-data">ID-4521 · datos 12px</Text>
+
+{/* Exclusivos del componente Button — no usar en texto libre */}
+<Text className="font-manrope-sb text-btn-sm">Button SM 13px</Text>
+<Text className="font-manrope-sb text-btn-md">Button MD 14.5px</Text>
+<Text className="font-manrope-sb text-btn-lg">Button LG 15.5px</Text>
 ```
 
 > El peso tipográfico va en `font-manrope-bd`, NO en `font-weight`. React Native no tiene síntesis de peso — cada peso es un archivo de fuente separado.
