@@ -1,30 +1,20 @@
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { router } from 'expo-router'
 import { useState } from 'react'
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { Pressable, Text, TextInput, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { Button } from '@/components/ui/button'
+import RadialGlow from '@/components/ui/radial-glow'
 import { Colors } from '@/constants/theme'
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
-function Field({
-  label,
-  ...props
-}: { label: string } & React.ComponentProps<typeof TextInput>) {
+function Field({ label, ...props }: { label: string } & React.ComponentProps<typeof TextInput>) {
   const [focused, setFocused] = useState(false)
   return (
     <View className="gap-1">
       <Text className="font-manrope-sb text-[12.5px] text-ink-2">{label}</Text>
       <TextInput
         placeholderTextColor={Colors.ink3}
-        className="font-manrope text-body text-ink bg-surface px-4"
+        className="bg-surface px-4 font-manrope text-body text-ink"
         style={{
           height: 44,
           borderWidth: 1,
@@ -40,87 +30,72 @@ function Field({
 }
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [keepSession, setKeepSession] = useState(true)
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingHorizontal: 18, paddingTop: 48, paddingBottom: 32 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Header */}
-          <View className="mb-10 gap-2">
-            <Text className="font-manrope-xb text-h1 text-ink">Bienvenido de vuelta</Text>
-            <Text className="font-manrope-md text-body text-ink-2">Ingresa con tu cuenta.</Text>
+      <View className="flex-1 items-center justify-between">
+        <View className="mt-12 items-center">
+          <View className="h-[76px] w-[76px] items-center justify-center rounded-[24px] bg-primary">
+            <MaterialIcons name="pets" size={32} color={Colors.surface} />
           </View>
 
-          {/* Formulario */}
-          <View className="gap-4">
-            <Field
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="tu@email.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-            />
-            <Field
-              label="Contraseña"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="••••••••"
-              secureTextEntry
-              autoComplete="current-password"
-            />
-            <Pressable className="items-end" onPress={() => {}}>
-              <Text className="font-manrope-md text-caption text-primary">
-                ¿Olvidaste tu contraseña?
-              </Text>
-            </Pressable>
-          </View>
+          <Text className="mt-6 text-4xl font-extrabold text-ink">Bienvenido de vuelta</Text>
 
-          {/* CTAs */}
-          <View className="mt-8 gap-3">
-            <Pressable
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-              className="bg-primary h-[52px] items-center justify-center rounded-lg"
-              onPress={() => router.replace('/(tabs)')}
-            >
-              <Text className="font-manrope-sb text-[15.5px] text-white">Iniciar sesión</Text>
-            </Pressable>
+          <Text className="mt-2 text-center text-sm text-ink-3">
+            Ingresa para seguir ayudando a los animales
+          </Text>
+        </View>
+      </View>
 
-            <Pressable
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-              className="border-border-strong bg-surface h-[52px] flex-row items-center justify-center gap-3 rounded-lg border"
-              onPress={() => {}}
-            >
-              <AntDesign name="google" size={18} color={Colors.ink} />
-              <Text className="font-manrope-sb text-[15.5px] text-ink">
-                Continuar con Google
-              </Text>
-            </Pressable>
+      <View className="gap-4 px-screen pb-8">
+        <Button
+          label="Iniciar sesión con Google"
+          variant="secondary"
+          fullWidth
+          iconPosition="left"
+          iconLibrary="antdesign"
+          icon="google"
+        />
+        <View className="flex-row items-center gap-3">
+          <View className="flex-1 border-t border-border" />
+          <Text className="text-sm text-ink-3">o</Text>
+          <View className="flex-1 border-t border-border" />
+        </View>
+        <View className="w-full flex-row gap-3">
+          <Button
+            label="Telefono"
+            variant="secondary"
+            iconPosition="left"
+            icon="phone"
+            fullWidth
+            style={{ flex: 1 }}
+          />
+          <Button
+            label="Correo"
+            variant="secondary"
+            iconPosition="left"
+            icon="email"
+            fullWidth
+            style={{ flex: 1 }}
+          />
+        </View>
+        <Pressable className="flex-row gap-3" onPress={() => setKeepSession(v => !v)}>
+          <MaterialIcons
+            name={keepSession ? 'check-box' : 'check-box-outline-blank'}
+            size={20}
+            color={keepSession ? Colors.primary : Colors.borderStrong}
+          />
+          <View className="flex-1 gap-1">
+            <Text className="text-sm font-bold text-ink">Sesión persistente</Text>
+            <Text className="text-sm text-ink-3">
+              Mantenemos tu sesión activa para que recibas alertas aunque cierres la app.
+            </Text>
           </View>
+        </Pressable>
+      </View>
 
-          {/* Link a registro */}
-          <View className="mt-8 flex-row items-center justify-center gap-1">
-            <Text className="font-manrope-md text-body text-ink-2">¿No tienes cuenta?</Text>
-            <Pressable
-              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
-              onPress={() => router.replace('/(auth)/register')}
-            >
-              <Text className="font-manrope-sb text-body text-primary">Regístrate</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      <RadialGlow />
     </SafeAreaView>
   )
 }

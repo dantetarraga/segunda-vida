@@ -5,6 +5,7 @@ import type { PressableProps, StyleProp, ViewStyle } from 'react-native'
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 
 import { Colors } from '@/constants/theme'
+import AntDesign from '@expo/vector-icons/AntDesign'
 
 // ─── Specs §9.1 Design System ─────────────────────────────────────────────────
 const SIZES = {
@@ -36,10 +37,10 @@ interface ButtonProps extends Omit<PressableProps, 'style'> {
   label: string
   variant?: Variant
   size?: Size
-  icon?: ComponentProps<typeof MaterialIcons>['name']
+  icon?: ComponentProps<typeof MaterialIcons>['name'] | ComponentProps<typeof AntDesign>['name']
+  iconLibrary?: 'material' | 'antdesign'
   iconPosition?: 'left' | 'right'
   loading?: boolean
-  /** Ocupa el 100% del ancho del padre. */
   fullWidth?: boolean
   style?: StyleProp<ViewStyle>
 }
@@ -49,6 +50,7 @@ export function Button({
   variant = 'primary',
   size = 'md',
   icon,
+  iconLibrary = 'material',
   iconPosition = 'left',
   loading = false,
   fullWidth = false,
@@ -63,6 +65,8 @@ export function Button({
   const s = SIZES[size]
   const v = VARIANTS[variant]
   const isDisabled = disabled || loading
+
+  const Icon = iconLibrary === 'antdesign' ? AntDesign : MaterialIcons
 
   return (
     <Pressable
@@ -97,7 +101,7 @@ export function Button({
       ) : (
         <>
           {icon && iconPosition === 'left' && (
-            <MaterialIcons name={icon} size={s.iconSize} color={v.fg} />
+            <Icon name={icon as any} size={s.iconSize} color={v.fg} />
           )}
           <Text
             className="font-manrope-sb"
@@ -107,7 +111,7 @@ export function Button({
             {label}
           </Text>
           {icon && iconPosition === 'right' && (
-            <MaterialIcons name={icon} size={s.iconSize} color={v.fg} />
+            <Icon name={icon as any} size={s.iconSize} color={v.fg} />
           )}
         </>
       )}
