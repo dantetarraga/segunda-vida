@@ -3,8 +3,8 @@ import type { ComponentProps } from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
 import { Text, View } from 'react-native'
 
-import { cn } from '@/lib/cn'
 import { Colors, Shadow } from '@/constants/theme'
+import { cn } from '@/lib/cn'
 
 // ─── Variantes ────────────────────────────────────────────────────────────────
 const VARIANTS = {
@@ -61,6 +61,7 @@ export function FloatingTag({
       style={[
         Shadow.sm,
         {
+          position: 'absolute',
           backgroundColor: v.bg,
           borderColor: v.borderColor,
           borderWidth: v.borderWidth,
