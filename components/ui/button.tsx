@@ -1,33 +1,23 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import type { ComponentProps } from 'react'
 import { useState } from 'react'
 import type { PressableProps, StyleProp, ViewStyle } from 'react-native'
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native'
 
 import { Colors } from '@/constants/theme'
-import AntDesign from '@expo/vector-icons/AntDesign'
+import { Icon, type AntDesignIconName, type MaterialIconName } from '@/components/ui/icon'
 
-// ─── Specs §9.1 Design System ─────────────────────────────────────────────────
 const SIZES = {
   sm: { height: 34, paddingHorizontal: 14, fontSize: 13, borderRadius: 10, gap: 6, iconSize: 16 },
   md: { height: 44, paddingHorizontal: 18, fontSize: 14.5, borderRadius: 12, gap: 8, iconSize: 18 },
-  lg: {
-    height: 52,
-    paddingHorizontal: 22,
-    fontSize: 15.5,
-    borderRadius: 14,
-    gap: 10,
-    iconSize: 20,
-  },
+  lg: { height: 52, paddingHorizontal: 22, fontSize: 15.5, borderRadius: 14, gap: 10, iconSize: 20 },
 } as const
 
 const VARIANTS = {
-  primary: { bg: Colors.primary, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
-  secondary: { bg: Colors.surface, fg: Colors.ink, border: Colors.borderStrong, borderWidth: 1 },
-  soft: { bg: Colors.primarySoft, fg: Colors.primaryInk, border: 'transparent', borderWidth: 0 },
-  ghost: { bg: 'transparent', fg: Colors.ink, border: 'transparent', borderWidth: 0 },
-  dark: { bg: Colors.ink, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
-  danger: { bg: Colors.urgencyHigh, fg: Colors.surface, border: 'transparent', borderWidth: 0 },
+  primary:   { bg: Colors.primary,     fg: Colors.surface,   border: 'transparent',       borderWidth: 0 },
+  secondary: { bg: Colors.surface,     fg: Colors.ink,       border: Colors.borderStrong, borderWidth: 1 },
+  soft:      { bg: Colors.primarySoft, fg: Colors.primaryInk, border: 'transparent',      borderWidth: 0 },
+  ghost:     { bg: 'transparent',      fg: Colors.ink,       border: 'transparent',       borderWidth: 0 },
+  dark:      { bg: Colors.ink,         fg: Colors.surface,   border: 'transparent',       borderWidth: 0 },
+  danger:    { bg: Colors.urgencyHigh, fg: Colors.surface,   border: 'transparent',       borderWidth: 0 },
 } as const
 
 type Variant = keyof typeof VARIANTS
@@ -37,7 +27,7 @@ interface ButtonProps extends Omit<PressableProps, 'style'> {
   label: string
   variant?: Variant
   size?: Size
-  icon?: ComponentProps<typeof MaterialIcons>['name'] | ComponentProps<typeof AntDesign>['name']
+  icon?: MaterialIconName | AntDesignIconName
   iconLibrary?: 'material' | 'antdesign'
   iconPosition?: 'left' | 'right'
   loading?: boolean
@@ -66,18 +56,10 @@ export function Button({
   const v = VARIANTS[variant]
   const isDisabled = disabled || loading
 
-  const Icon = iconLibrary === 'antdesign' ? AntDesign : MaterialIcons
-
   return (
     <Pressable
-      onPressIn={(e) => {
-        setPressed(true)
-        onPressIn?.(e)
-      }}
-      onPressOut={(e) => {
-        setPressed(false)
-        onPressOut?.(e)
-      }}
+      onPressIn={(e) => { setPressed(true); onPressIn?.(e) }}
+      onPressOut={(e) => { setPressed(false); onPressOut?.(e) }}
       disabled={isDisabled}
       style={[
         styles.base,
@@ -101,17 +83,13 @@ export function Button({
       ) : (
         <>
           {icon && iconPosition === 'left' && (
-            <Icon name={icon as any} size={s.iconSize} color={v.fg} />
+            <Icon library={iconLibrary} name={icon as any} size={s.iconSize} color={v.fg} />
           )}
-          <Text
-            className="font-manrope-sb"
-            style={{ fontSize: s.fontSize, color: v.fg }}
-            numberOfLines={1}
-          >
+          <Text className="font-manrope-sb" style={{ fontSize: s.fontSize, color: v.fg }} numberOfLines={1}>
             {label}
           </Text>
           {icon && iconPosition === 'right' && (
-            <Icon name={icon as any} size={s.iconSize} color={v.fg} />
+            <Icon library={iconLibrary} name={icon as any} size={s.iconSize} color={v.fg} />
           )}
         </>
       )}
@@ -120,9 +98,5 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
-  base: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  base: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
 })

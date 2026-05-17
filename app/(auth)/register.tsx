@@ -1,4 +1,3 @@
-import AntDesign from '@expo/vector-icons/AntDesign'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import {
@@ -12,6 +11,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import { Icon } from '@/components/ui/icon'
 import { Colors } from '@/constants/theme'
 
 function Field({ label, ...props }: { label: string } & React.ComponentProps<typeof TextInput>) {
@@ -105,7 +105,7 @@ export default function RegisterScreen() {
               className="h-[52px] flex-row items-center justify-center gap-3 rounded-lg border border-border-strong bg-surface"
               onPress={() => {}}
             >
-              <AntDesign name="google" size={18} color={Colors.ink} />
+              <Icon library="antdesign" name="google" size={18} color={Colors.ink} />
               <Text className="font-manrope-sb text-[15.5px] text-ink">Continuar con Google</Text>
             </Pressable>
           </View>

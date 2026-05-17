@@ -1,12 +1,11 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import type { ComponentProps } from 'react'
 import type { StyleProp, ViewStyle } from 'react-native'
 import { Text, View } from 'react-native'
 
 import { Colors, Shadow } from '@/constants/theme'
 import { cn } from '@/lib/cn'
+import { Icon, type MaterialIconName } from '@/components/ui/icon'
 
-// ─── Variantes ────────────────────────────────────────────────────────────────
 const VARIANTS = {
   white: {
     bg: Colors.surface,
@@ -38,7 +37,7 @@ export type FloatingTagVariant = keyof typeof VARIANTS
 
 export interface FloatingTagProps {
   label: string
-  icon?: ComponentProps<typeof MaterialIcons>['name']
+  icon?: MaterialIconName
   variant?: FloatingTagVariant
   rotate?: number
   className?: string
@@ -61,7 +60,7 @@ export function FloatingTag({
       style={[
         Shadow.sm,
         {
-          position: 'absolute',
+          alignSelf: 'flex-start',
           backgroundColor: v.bg,
           borderColor: v.borderColor,
           borderWidth: v.borderWidth,
@@ -70,7 +69,7 @@ export function FloatingTag({
         style,
       ]}
     >
-      {icon && <MaterialIcons name={icon} size={13} color={v.textColor} />}
+      {icon && <Icon name={icon} size={13} color={v.textColor} />}
       <Text
         className="font-manrope-sb"
         style={{ fontSize: 12, lineHeight: 14, color: v.textColor }}
