@@ -1,5 +1,4 @@
 import AntDesign from '@expo/vector-icons/AntDesign'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import {
@@ -15,17 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Colors } from '@/constants/theme'
 
-function Field({
-  label,
-  ...props
-}: { label: string } & React.ComponentProps<typeof TextInput>) {
+function Field({ label, ...props }: { label: string } & React.ComponentProps<typeof TextInput>) {
   const [focused, setFocused] = useState(false)
   return (
     <View className="gap-1">
       <Text className="font-manrope-sb text-[12.5px] text-ink-2">{label}</Text>
       <TextInput
         placeholderTextColor={Colors.ink3}
-        className="font-manrope text-body text-ink bg-surface px-4"
+        className="bg-surface px-4 font-manrope text-body text-ink"
         style={{
           height: 44,
           borderWidth: 1,
@@ -47,15 +43,6 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">
-      {/* Back */}
-      <Pressable
-        style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-        className="mx-[18px] mt-2 h-11 w-11 items-center justify-center rounded-full"
-        onPress={() => router.back()}
-      >
-        <MaterialIcons name="arrow-back" size={22} color={Colors.ink} />
-      </Pressable>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
@@ -107,7 +94,7 @@ export default function RegisterScreen() {
           <View className="mt-8 gap-3">
             <Pressable
               style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-              className="bg-primary h-[52px] items-center justify-center rounded-lg"
+              className="h-[52px] items-center justify-center rounded-lg bg-primary"
               onPress={() => router.replace('/(tabs)')}
             >
               <Text className="font-manrope-sb text-[15.5px] text-white">Crear cuenta</Text>
@@ -115,13 +102,11 @@ export default function RegisterScreen() {
 
             <Pressable
               style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
-              className="border-border-strong bg-surface h-[52px] flex-row items-center justify-center gap-3 rounded-lg border"
+              className="h-[52px] flex-row items-center justify-center gap-3 rounded-lg border border-border-strong bg-surface"
               onPress={() => {}}
             >
               <AntDesign name="google" size={18} color={Colors.ink} />
-              <Text className="font-manrope-sb text-[15.5px] text-ink">
-                Continuar con Google
-              </Text>
+              <Text className="font-manrope-sb text-[15.5px] text-ink">Continuar con Google</Text>
             </Pressable>
           </View>
 
