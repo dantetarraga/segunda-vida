@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Text, View } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -85,7 +86,7 @@ export const RegisterForm = ({
           }
         />
 
-        <View className="gap-4">
+        <Animated.View entering={FadeIn.duration(200)} className="gap-4">
           <InputField
             control={control}
             name="identifier"
@@ -120,7 +121,7 @@ export const RegisterForm = ({
             autoComplete="new-password"
             required
           />
-        </View>
+        </Animated.View>
 
         <TermsCheckbox
           accepted={accepted}

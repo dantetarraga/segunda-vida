@@ -1,4 +1,4 @@
-import { router, Slot, usePathname } from 'expo-router'
+import { router, Stack, usePathname } from 'expo-router'
 import { KeyboardAvoidingView, Platform, Pressable, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -8,7 +8,9 @@ import { Colors } from '@/constants/theme'
 
 const AuthLayout = () => {
   const pathname = usePathname()
-  const showBack = pathname !== '/(auth)'
+
+  const routesWithBackButton = ['/login', '/register', '/forgot-password']
+  const showBack = routesWithBackButton.includes(pathname)
 
   return (
     <KeyboardAvoidingView
@@ -23,7 +25,7 @@ const AuthLayout = () => {
             <Pressable
               onPress={() => router.back()}
               hitSlop={12}
-              className="h-10 w-10 items-center justify-center rounded-xl bg-surface"
+              className="h-10 w-10 items-center justify-center rounded-[12px] border border-border-strong bg-surface"
               accessibilityRole="button"
               accessibilityLabel="Volver"
               accessibilityHint="Regresa a la pantalla anterior"
@@ -33,7 +35,18 @@ const AuthLayout = () => {
           </View>
         )}
 
-        <Slot />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+            animation: 'slide_from_right',
+          }}
+        >
+          <Stack.Screen name="index" options={{ animation: 'fade' }} />
+          <Stack.Screen name="login" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="register" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="forgot-password" options={{ animation: 'slide_from_bottom' }} />
+        </Stack>
       </SafeAreaView>
     </KeyboardAvoidingView>
   )

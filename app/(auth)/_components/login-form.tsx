@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -37,7 +38,7 @@ export const LoginForm = ({
       <View className="gap-6">
         <AuthHeader icon={config.icon} title="Iniciar sesión" subtitle="Bienvenido de vuelta." />
 
-        <View className="gap-4">
+        <Animated.View entering={FadeIn.duration(200)} className="gap-4">
           <InputField
             control={control}
             name="identifier"
@@ -76,7 +77,7 @@ export const LoginForm = ({
               <Text className="text-body text-primary">¿Olvidaste tu contraseña?</Text>
             </Pressable>
           </View>
-        </View>
+        </Animated.View>
       </View>
 
       <View className="gap-4 pt-8">
