@@ -1,102 +1,126 @@
 import { router } from 'expo-router'
-import { useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { useEffect, useState } from 'react'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Icon } from '@/components/ui/icon'
 import RadialGlow from '@/components/ui/radial-glow'
 import { Colors } from '@/constants/theme'
-import { Icon } from '@/components/ui/icon'
+import { getKeepSession, setKeepSession } from '@/lib/storage'
+import { type Method } from './_constants/method-config'
+import AuthMethodPicker from './_components/auth-method-picker'
+import { LoginForm } from './_components/login-form'
+import { RegisterForm } from './_components/register-form'
+
+type Step = 'login-picker' | 'login-form' | 'register-picker' | 'register-form'
 
 export default function AuthIndexScreen() {
-  const [keepSession, setKeepSession] = useState(true)
+  const [step, setStep] = useState<Step>('login-picker')
+  const [method, setMethod] = useState<Method>('email')
+  const [keepSession, setKeepSessionState] = useState(true)
+
+  useEffect(() => {
+    getKeepSession().then(setKeepSessionState)
+  }, [])
+
+  const handleKeepSessionChange = async (value: boolean) => {
+    setKeepSessionState(value)
+    await setKeepSession(value)
+  }
+
+  const handleBack = () => {
+    if (step === 'login-form') setStep('login-picker')
+    else if (step === 'register-picker') setStep('login-picker')
+    else if (step === 'register-form') setStep('register-picker')
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-canvas">
-      <View className="flex-1 items-center justify-between">
-        <View className="mt-12 items-center">
-          <View className="h-[76px] w-[76px] items-center justify-center rounded-[24px] bg-primary">
-            <Icon name="pets" size={32} color={Colors.surface} />
-          </View>
-
-          <Text className="mt-6 text-4xl font-extrabold text-ink">Bienvenido de vuelta</Text>
-
-          <Text className="mt-2 text-center text-sm text-ink-3">
-            Ingresa para seguir ayudando a los animales
-          </Text>
-        </View>
-      </View>
-
-      <View className="gap-4 px-screen pb-8">
-        <Button
-          label="Iniciar sesión con Google"
-          variant="secondary"
-          fullWidth
-          iconPosition="left"
-          iconLibrary="antdesign"
-          icon="google"
-        />
-        <View className="flex-row items-center gap-3">
-          <View className="flex-1 border-t border-border" />
-          <Text className="text-sm text-ink-3">o</Text>
-          <View className="flex-1 border-t border-border" />
-        </View>
-        <View className="w-full flex-row gap-3">
-          <Button
-            label="Teléfono"
-            variant="secondary"
-            iconPosition="left"
-            icon="phone"
-            style={{ flex: 1 }}
-            onPress={() => router.push('/(auth)/login?method=phone')}
-          />
-          <Button
-            label="Correo"
-            variant="secondary"
-            iconPosition="left"
-            icon="email"
-            style={{ flex: 1 }}
-            onPress={() => router.push('/(auth)/login?method=email')}
-          />
-        </View>
-        <View
-          style={{
-            backgroundColor: Colors.surface2,
-            padding: 14,
-            borderRadius: 14,
-            flexDirection: 'row',
-            gap: 12,
-            alignItems: 'flex-start',
-          }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Pressable
-            onPress={() => setKeepSession(v => !v)}
-            hitSlop={8}
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: 7,
-              backgroundColor: Colors.surface,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: 1,
-            }}
-          >
-            {keepSession && <Icon name="check" size={16} color={Colors.primary} />}
-          </Pressable>
-          <View style={{ flex: 1, gap: 4 }}>
-            <Text className="text-sm font-bold text-ink">Sesión persistente</Text>
-            <Text className="text-sm text-ink-3">
-              Mantenemos tu sesión activa para que recibas alertas aunque cierres la app.
-            </Text>
-          </View>
-        </View>
+          {step !== 'login-picker' && (
+            <View className="px-screen pt-4">
+              <Pressable
+                onPress={handleBack}
+                hitSlop={12}
+                className="h-10 w-10 items-center justify-center rounded-xl bg-surface"
+              >
+                <Icon name="arrow-back" size={20} color={Colors.ink} />
+              </Pressable>
+            </View>
+          )}
 
-        <Text className="mt-3 text-center text-sm text-ink-2">
-          Al continuar aceptas nuestros <Text className="font-bold text-ink">Términos</Text> y la{' '}
-          <Text className="font-bold text-ink">Política de privacidad</Text>
-        </Text>
-      </View>
+          {step === 'login-picker' && (
+            <AuthMethodPicker
+              icon="pets"
+              title="Bienvenido de vuelta"
+              subtitle="Ingresa para seguir ayudando a los animales"
+              googleLabel="Iniciar sesión con Google"
+              buttons={[
+                { label: 'Teléfono', icon: 'phone', variant: 'secondary', onPress: () => { setMethod('phone'); setStep('login-form') } },
+                { label: 'Correo', icon: 'email', variant: 'secondary', onPress: () => { setMethod('email'); setStep('login-form') } },
+              ]}
+              extras={
+                <Checkbox
+                  checked={keepSession}
+                  onChange={handleKeepSessionChange}
+                  size={24}
+                  label={
+                    <View style={{ gap: 2 }}>
+                      <Text className="text-sm font-bold text-ink">Sesión persistente</Text>
+                      <Text className="text-sm text-ink-3">
+                        Mantenemos tu sesión activa para que recibas alertas aunque cierres la app.
+                      </Text>
+                    </View>
+                  }
+                />
+              }
+              footerQuestion="¿No tienes cuenta?"
+              footerLabel="Regístrate"
+              onFooterPress={() => setStep('register-picker')}
+            />
+          )}
+
+          {step === 'login-form' && (
+            <LoginForm
+              onSuccess={() => router.replace('/(tabs)')}
+              onSwitchToRegister={() => setStep('register-picker')}
+            />
+          )}
+
+          {step === 'register-picker' && (
+            <AuthMethodPicker
+              icon="pets"
+              title="Crear cuenta"
+              subtitle="Únete a la red que rescata, cuida y encuentra hogar para los animalitos de Lima."
+              googleLabel="Continuar con Google"
+              buttons={[
+                { label: 'Correo', icon: 'email', variant: 'primary', onPress: () => { setMethod('email'); setStep('register-form') } },
+                { label: 'Teléfono', icon: 'phone', variant: 'primary', onPress: () => { setMethod('phone'); setStep('register-form') } },
+              ]}
+              footerQuestion="¿Ya tienes cuenta?"
+              footerLabel="Inicia sesión"
+              onFooterPress={() => setStep('login-picker')}
+            />
+          )}
+
+          {step === 'register-form' && (
+            <RegisterForm
+              method={method}
+              onSuccess={() => router.replace('/(tabs)')}
+              onSwitchToLogin={() => setStep('login-picker')}
+            />
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       <RadialGlow />
     </SafeAreaView>

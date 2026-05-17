@@ -20,7 +20,7 @@ const VARIANTS = {
   danger:    { bg: Colors.urgencyHigh, fg: Colors.surface,   border: 'transparent',       borderWidth: 0 },
 } as const
 
-type Variant = keyof typeof VARIANTS
+export type Variant = keyof typeof VARIANTS
 type Size = keyof typeof SIZES
 
 interface ButtonProps extends Omit<PressableProps, 'style'> {

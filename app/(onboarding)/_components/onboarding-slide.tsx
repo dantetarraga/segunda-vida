@@ -57,13 +57,14 @@ const OnboardingSlide = ({
               label={text}
               variant={variant}
               rotate={rotate}
+              className="absolute"
               style={resolvePosition(position, cardW, cardH)}
             />
           ))}
         </PhotoCard>
       </View>
 
-      <View className="px-screen gap-1 pb-4">
+      <View className="gap-1 px-screen pb-4">
         {kicker && (
           <Text className="mb-1 font-manrope-sb text-kicker uppercase tracking-widest text-primary">
             {kicker}
@@ -71,6 +72,7 @@ const OnboardingSlide = ({
         )}
 
         <Text className="text-4xl font-extrabold text-ink">{title}</Text>
+
         <Text className="text-sm leading-6 text-ink-2">{description}</Text>
       </View>
     </View>

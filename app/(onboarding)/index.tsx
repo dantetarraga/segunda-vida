@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import WelcomeHero from './_components/welcome-hero'
 
 const WelcomeScreen = () => {
-  const handleGoToLogin = () => router.replace('/(auth)/login')
+  const handleGoToLogin = () => router.replace('/(auth)/')
   const handleGoToSlide = () => router.push('/(onboarding)/slide-report')
 
   return (
@@ -15,7 +15,7 @@ const WelcomeScreen = () => {
         <WelcomeHero />
       </View>
 
-      <View className="px-screen gap-1 pb-8 pt-4">
+      <View className="gap-1 px-screen pb-8 pt-4">
         <Text className="text-4xl font-extrabold text-ink">
           Cada calle <Text className="text-primary">tiene</Text> una historia. Vamos a cambiarla.
         </Text>
